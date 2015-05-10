@@ -8,8 +8,6 @@
   <component name="ChangeListManager">
     <list default="true" id="8628d396-7d9c-4457-8b95-4fc365bdd339" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/andrew749/flickrwallpaper/FlickrResult.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/andrew749/flickrwallpaper/FlickrResult.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/andrew749/flickrwallpaper/FlickrSearcher.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/andrew749/flickrwallpaper/FlickrSearcher.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/andrew749/flickrwallpaper/MainActivity.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/andrew749/flickrwallpaper/MainActivity.java" />
     </list>
     <ignored path="FlickrWallpaper.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -90,8 +88,8 @@
           <file leaf-file-name="FlickrResult.java" pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/app/src/main/java/com/andrew749/flickrwallpaper/FlickrResult.java">
               <provider selected="true" editor-type-id="text-editor">
-                <state vertical-scroll-proportion="-0.0020876827">
-                  <caret line="22" column="19" selection-start-line="22" selection-start-column="19" selection-end-line="22" selection-end-column="19" />
+                <state vertical-scroll-proportion="0.6085595">
+                  <caret line="73" column="49" selection-start-line="73" selection-start-column="49" selection-end-line="73" selection-end-column="49" />
                   <folding>
                     <element signature="imports" expanded="true" />
                   </folding>
@@ -1484,8 +1482,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/andrew749/flickrwallpaper/FlickrResult.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-0.0020876827">
-          <caret line="22" column="19" selection-start-line="22" selection-start-column="19" selection-end-line="22" selection-end-column="19" />
+        <state vertical-scroll-proportion="0.6085595">
+          <caret line="73" column="49" selection-start-line="73" selection-start-column="49" selection-end-line="73" selection-end-column="49" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>

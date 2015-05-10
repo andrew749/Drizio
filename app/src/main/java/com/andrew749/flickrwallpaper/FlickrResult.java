@@ -47,10 +47,10 @@ public class FlickrResult implements LinkFollowingCallback{
     private class FollowUrl extends AsyncTask<Long, Void,URL>{
         LinkFollowingCallback callback;
         private class SizesParent{
-            SizesResult result;
+            SizesResult sizes;
         }
         private class SizesResult{
-            List<Size> imageSizes;
+            List<Size> size;
         }
         public class Size{
             String label;
@@ -70,8 +70,8 @@ public class FlickrResult implements LinkFollowingCallback{
             try {
                 String json=FlickrSearcher.readUrl(new URL(REST_ENDPOINT+queryParameter));
                 SizesParent sizesParent=gson.fromJson(json, SizesParent.class);
-                SizesResult sizesResult=sizesParent.result;
-                List<Size> sizes=sizesResult.imageSizes;
+                SizesResult sizesResult=sizesParent.sizes;
+                List<Size> sizes=sizesResult.size;
                 for(Size size:sizes){
                     largestImage=new URL(size.source);
                 }
