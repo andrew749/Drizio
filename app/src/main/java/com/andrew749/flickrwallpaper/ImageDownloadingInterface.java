@@ -8,5 +8,5 @@ import android.graphics.Bitmap;
 public interface ImageDownloadingInterface {
     //a callback method to indicate if done downloading
     //returns null if error and true if image is downloaded
-    boolean downloadedImage(Bitmap bm);
+    void downloadedImage(Bitmap bm);
 }
