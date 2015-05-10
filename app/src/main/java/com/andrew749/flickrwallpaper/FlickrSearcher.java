@@ -3,8 +3,7 @@ package com.andrew749.flickrwallpaper;
 import android.os.AsyncTask;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
+import com.google.gson.GsonBuilder;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -17,6 +16,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by andrewcodispoti on 2015-05-09.
@@ -35,38 +35,62 @@ public class FlickrSearcher {
         GetTopImages task = new GetTopImages();
         task.execute();
     }
-    public static String readIt(InputStream stream) throws IOException {
-        BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
-        StringBuilder out = new StringBuilder();
-        String newLine = System.getProperty("line.separator");
-        String line;
-        while ((line = reader.readLine()) != null) {
-            out.append(line);
-            out.append(newLine);
+    private static String readUrl(URL url) throws Exception {
+        BufferedReader reader = null;
+        try {
+            reader = new BufferedReader(new InputStreamReader(url.openStream()));
+            StringBuffer buffer = new StringBuffer();
+            int read;
+            char[] chars = new char[1024];
+            while ((read = reader.read(chars)) != -1)
+                buffer.append(chars, 0, read);
+
+            return buffer.toString();
+        } finally {
+            if (reader != null)
+                reader.close();
         }
-        return out.toString();
     }
     //task to download image list
     private class GetTopImages extends AsyncTask<Void, Integer, ArrayList<FlickrResult>> {
-
+        public class FlickrPhoto {
+            public long id;
+            public String owner;
+            public String secret;
+            public String server;
+            public int farm;
+            public String title;
+            public int ispublic;
+            public int isfriend;
+            public int isfamily;
+        }
+        public class FlickrObject{
+            public List<FlickrPhoto> photo;
+        }
+        public class FlickrParent{
+            public FlickrObject photos;
+        }
         @Override
         protected ArrayList<FlickrResult> doInBackground(Void... voids) {
             ArrayList<FlickrResult> results = new ArrayList<FlickrResult>();
-            String queryParameter = "?method=flickr.interestingness.getList&api_key=6c30fdb8388402770932f08d6e367939&format=json";
+            String queryParameter = "?method=flickr.interestingness.getList&api_key=6c30fdb8388402770932f08d6e367939&format=json&nojsoncallback=1";
             try {
                 URL url = new URL(REST_ENDPOINT + queryParameter);
-                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
-                httpURLConnection.setRequestMethod("GET");
-                httpURLConnection.connect();
-                InputStream is = httpURLConnection.getInputStream();
-                Gson gson = new Gson();
-                JsonElement jelem = gson.fromJson(readIt(is), JsonElement.class);
-                JsonObject jobj = jelem.getAsJsonObject();
 
+                Gson gson = new GsonBuilder().create();
+                String json=readUrl(url);
+                FlickrParent flickrParent=gson.fromJson(json, FlickrParent.class);
+                FlickrObject flickrObject=flickrParent.photos;
+                List<FlickrPhoto> photos= flickrObject.photo;
+                for (FlickrPhoto photo: photos){
+                    results.add(new FlickrResult(photo.title,photo.id));
+                }
                 //TODO create arraylist of flickr results with response
             } catch (MalformedURLException e) {
                 e.printStackTrace();
             } catch (IOException e) {
+                e.printStackTrace();
+            } catch (Exception e) {
                 e.printStackTrace();
             }
             return results;
@@ -75,7 +99,7 @@ public class FlickrSearcher {
         @Override
         protected void onPostExecute(ArrayList<FlickrResult> flickrResults) {
             super.onPostExecute(flickrResults);
-            if (!flickrResults.isEmpty())
+//            if (!flickrResults.isEmpty())
                 downloadingInterface.imageListIsDoneLoading(flickrResults);
         }
     }

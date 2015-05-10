@@ -27,13 +27,7 @@ public class FlickrDownloader {
             String queryParameter="?method=flickr.photos.getSizes&api_key=6c30fdb8388402770932f08d6e367939&photo_id=";
             try {
                 URL url = new URL(REST_ENDPOINT + queryParameter);
-                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
-                httpURLConnection.setRequestMethod("GET");
-                httpURLConnection.connect();
-                InputStream is = httpURLConnection.getInputStream();
-                Gson gson = new Gson();
-                JsonElement jelem = gson.fromJson(is.toString(), JsonElement.class);
-                JsonObject jobj = jelem.getAsJsonObject();
+
 
                 //TODO create arraylist of flickr results with response
             } catch (MalformedURLException e) {

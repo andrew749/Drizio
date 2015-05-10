@@ -2,16 +2,21 @@ package com.andrew749.flickrwallpaper;
 
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import java.util.ArrayList;
 
-public class MainActivity extends ActionBarActivity {
+
+public class MainActivity extends ActionBarActivity implements ListDownloadingInterface {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        FlickrSearcher searcher=new FlickrSearcher(this);
+        searcher.getImages();
     }
 
 
@@ -35,5 +40,11 @@ public class MainActivity extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean imageListIsDoneLoading(ArrayList<FlickrResult> result) {
+        Log.d("test","test");
+        return false;
     }
 }
