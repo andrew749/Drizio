@@ -1,5 +1,6 @@
 package com.andrew749.flickrwallpaper;
 
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
@@ -22,6 +23,7 @@ public class FlickrResult implements LinkFollowingCallback, ImageDownloadingInte
     private String imageName;
     private URL url = null;
     private long id;
+    private static Bitmap fallbackBitmap;
     private static String REST_ENDPOINT = "https://api.flickr.com/services/rest/";
     private Bitmap image;
 
@@ -45,6 +47,15 @@ public class FlickrResult implements LinkFollowingCallback, ImageDownloadingInte
         return url;
     }
 
+    public Bitmap getImage() {
+        if (image == null) {
+            ImageDownloader imageDownloader = new ImageDownloader(this);
+            imageDownloader.execute();
+            return null;
+        } else
+            return image;
+    }
+
     public String getName() {
         return imageName;
     }
@@ -52,8 +63,6 @@ public class FlickrResult implements LinkFollowingCallback, ImageDownloadingInte
     @Override
     public void doneFollowing(URL url) {
         this.url = url;
-        ImageDownloader imageDownloader = new ImageDownloader(this);
-        imageDownloader.execute();
     }
 
     @Override
