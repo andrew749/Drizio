@@ -44,7 +44,7 @@ public class MainActivity extends ActionBarActivity implements ListDownloadingIn
 
     @Override
     public boolean imageListIsDoneLoading(ArrayList<FlickrResult> result) {
-        Log.d("test","test");
+
         return false;
     }
 }

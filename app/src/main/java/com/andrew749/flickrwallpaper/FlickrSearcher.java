@@ -35,7 +35,7 @@ public class FlickrSearcher {
         GetTopImages task = new GetTopImages();
         task.execute();
     }
-    private static String readUrl(URL url) throws Exception {
+    public static String readUrl(URL url) throws Exception {
         BufferedReader reader = null;
         try {
             reader = new BufferedReader(new InputStreamReader(url.openStream()));
@@ -76,7 +76,6 @@ public class FlickrSearcher {
             String queryParameter = "?method=flickr.interestingness.getList&api_key=6c30fdb8388402770932f08d6e367939&format=json&nojsoncallback=1";
             try {
                 URL url = new URL(REST_ENDPOINT + queryParameter);
-
                 Gson gson = new GsonBuilder().create();
                 String json=readUrl(url);
                 FlickrParent flickrParent=gson.fromJson(json, FlickrParent.class);
@@ -99,7 +98,7 @@ public class FlickrSearcher {
         @Override
         protected void onPostExecute(ArrayList<FlickrResult> flickrResults) {
             super.onPostExecute(flickrResults);
-//            if (!flickrResults.isEmpty())
+            if (!flickrResults.isEmpty())
                 downloadingInterface.imageListIsDoneLoading(flickrResults);
         }
     }
