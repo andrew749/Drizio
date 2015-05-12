@@ -47,7 +47,7 @@ public class ImageAdapter extends BaseAdapter {
         View listRow = view;
         if (listRow == null)
             listRow = inflater.inflate(R.layout.listelement, viewGroup, false);
-        TextView titleText = (TextView) listRow.findViewById(R.id.imageTitle);
+        TextView titleText = (Tex tView) listRow.findViewById(R.id.imageTitle);
         ImageView imageView=(ImageView)listRow.findViewById(R.id.image);
         Bitmap image=results.get(i).getImage();
         if(image!=null)
