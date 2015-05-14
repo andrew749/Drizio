@@ -4,6 +4,7 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
+import android.widget.ImageView;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -25,7 +26,7 @@ public class FlickrResult implements LinkFollowingCallback, ImageDownloadingInte
     private long id;
     private static Bitmap fallbackBitmap;
     private static String REST_ENDPOINT = "https://api.flickr.com/services/rest/";
-    private Bitmap image;
+    private Bitmap image=null;
 
     //simple model for a result containing the image and the url of the image.
     public FlickrResult(String name, long id) {
@@ -50,12 +51,20 @@ public class FlickrResult implements LinkFollowingCallback, ImageDownloadingInte
     public Bitmap getImage() {
         if (image == null) {
             ImageDownloader imageDownloader = new ImageDownloader(this);
-            imageDownloader.execute();
+            imageDownloader.execute(this.getUrl());
             return null;
         } else
             return image;
     }
-
+    public void getAndSetImage(ImageView iv){
+        if(image==null){
+            ImageDownloader imageDownloader=new ImageDownloader(this,iv);
+            imageDownloader.execute(this.getUrl());
+        }
+        else{
+            iv.setImageBitmap(image);
+        }
+    }
     public String getName() {
         return imageName;
     }
@@ -122,16 +131,19 @@ public class FlickrResult implements LinkFollowingCallback, ImageDownloadingInte
 
     private class ImageDownloader extends AsyncTask<URL, Integer, Bitmap> {
         ImageDownloadingInterface callback;
-
+        ImageView iv=null;
         public ImageDownloader(ImageDownloadingInterface callback) {
             this.callback = callback;
         }
-
+        public ImageDownloader(ImageDownloadingInterface callback, ImageView iv){
+            this.callback=callback;
+            this.iv=iv;
+        }
         @Override
         protected Bitmap doInBackground(URL... urls) {
             Bitmap result = null;
             try {
-                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+                HttpURLConnection httpURLConnection = (HttpURLConnection) urls[0].openConnection();
                 InputStream is = httpURLConnection.getInputStream();
                 BufferedInputStream bis = new BufferedInputStream(is);
                 result = BitmapFactory.decodeStream(bis);
@@ -147,6 +159,9 @@ public class FlickrResult implements LinkFollowingCallback, ImageDownloadingInte
         protected void onPostExecute(Bitmap bitmap) {
             super.onPostExecute(bitmap);
             callback.downloadedImage(bitmap);
+            if(iv!=null){
+                iv.setImageBitmap(bitmap);
+            }
         }
     }
 

@@ -49,9 +49,7 @@ public class ImageAdapter extends BaseAdapter {
             listRow = inflater.inflate(R.layout.listelement, viewGroup, false);
         TextView titleText = (TextView) listRow.findViewById(R.id.imageTitle);
         ImageView imageView=(ImageView)listRow.findViewById(R.id.image);
-        Bitmap image=results.get(i).getImage();
-        if(image!=null)
-        imageView.setImageBitmap(results.get(i).getImage());
+        results.get(i).getAndSetImage(imageView);
 //        else{
 //            if(fallbackBitmap==null) {
 //                fallbackBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.defaultplaceholder);

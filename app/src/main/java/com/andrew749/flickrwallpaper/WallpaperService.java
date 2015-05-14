@@ -77,7 +77,7 @@ public class WallpaperService extends android.service.wallpaper.WallpaperService
                     // draw the background image
 //                    c.drawBitmap(backgroundImage, 0, 0, null);
                     // draw the fish
-                    c.drawRoundRect(x,y,x*x,y*y,10,10,paint);
+                    c.drawRoundRect(x,y,x+10,y+10,10,10,paint);
                     // get the width of canvas
                     int width=c.getWidth();
 
