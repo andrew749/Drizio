@@ -1,8 +1,10 @@
 package com.andrew749.flickrwallpaper;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.text.method.CharacterPickerDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,22 +45,23 @@ public class ImageAdapter extends BaseAdapter {
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-
+        final int j=i;
         View listRow = view;
         if (listRow == null)
             listRow = inflater.inflate(R.layout.listelement, viewGroup, false);
         TextView titleText = (TextView) listRow.findViewById(R.id.imageTitle);
-        ImageView imageView=(ImageView)listRow.findViewById(R.id.image);
+        ImageView imageView=(ImageView)listRow.findViewById(R.id.sideImage);
         results.get(i).getAndSetImage(imageView);
-//        else{
-//            if(fallbackBitmap==null) {
-//                fallbackBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.defaultplaceholder);
-//            }
-//
-//            imageView.setImageBitmap(fallbackBitmap);
-//        }
-
         titleText.setText(results.get(i).getName());
+        listRow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent=new Intent(context,FullSizeImage.class);
+                intent.putExtra("image",results.get(j).getImage());
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                context.startActivity(intent);
+            }
+        });
 
         return listRow;
     }

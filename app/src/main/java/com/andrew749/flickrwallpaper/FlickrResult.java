@@ -3,6 +3,7 @@ package com.andrew749.flickrwallpaper;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.Image;
 import android.os.AsyncTask;
 import android.widget.ImageView;
 
@@ -27,7 +28,7 @@ public class FlickrResult implements LinkFollowingCallback, ImageDownloadingInte
     private static Bitmap fallbackBitmap;
     private static String REST_ENDPOINT = "https://api.flickr.com/services/rest/";
     private Bitmap image=null;
-
+    ImageView iv;
     //simple model for a result containing the image and the url of the image.
     public FlickrResult(String name, long id) {
         this.imageName = name;
@@ -47,22 +48,14 @@ public class FlickrResult implements LinkFollowingCallback, ImageDownloadingInte
     public URL getUrl() {
         return url;
     }
-
-    public Bitmap getImage() {
-        if (image == null) {
-            ImageDownloader imageDownloader = new ImageDownloader(this);
-            imageDownloader.execute(this.getUrl());
-            return null;
-        } else
-            return image;
+    public Bitmap getImage(){
+        return this.image;
     }
+
     public void getAndSetImage(ImageView iv){
-        if(image==null){
-            ImageDownloader imageDownloader=new ImageDownloader(this,iv);
-            imageDownloader.execute(this.getUrl());
-        }
-        else{
-            iv.setImageBitmap(image);
+        this.iv=iv;
+        if(this.image!=null){
+            iv.setImageBitmap(this.image);
         }
     }
     public String getName() {
@@ -72,6 +65,8 @@ public class FlickrResult implements LinkFollowingCallback, ImageDownloadingInte
     @Override
     public void doneFollowing(URL url) {
         this.url = url;
+        ImageDownloader imageDownloader=new ImageDownloader(this);
+        imageDownloader.execute(url);
     }
 
     @Override
@@ -111,16 +106,16 @@ public class FlickrResult implements LinkFollowingCallback, ImageDownloadingInte
                 SizesParent sizesParent = gson.fromJson(json, SizesParent.class);
                 SizesResult sizesResult = sizesParent.sizes;
                 List<Size> sizes = sizesResult.size;
-                for (Size size : sizes) {
-                    largestImage = new URL(size.source);
-                }
+//                for (Size size : sizes) {
+//                    largestImage = new URL(size.source);
+//                }
+                largestImage=new URL(sizes.get(0).source);
             } catch (Exception e) {
                 e.printStackTrace();
             }
 
             return largestImage;
         }
-
         @Override
         protected void onPostExecute(URL url) {
             super.onPostExecute(url);
@@ -131,13 +126,8 @@ public class FlickrResult implements LinkFollowingCallback, ImageDownloadingInte
 
     private class ImageDownloader extends AsyncTask<URL, Integer, Bitmap> {
         ImageDownloadingInterface callback;
-        ImageView iv=null;
         public ImageDownloader(ImageDownloadingInterface callback) {
             this.callback = callback;
-        }
-        public ImageDownloader(ImageDownloadingInterface callback, ImageView iv){
-            this.callback=callback;
-            this.iv=iv;
         }
         @Override
         protected Bitmap doInBackground(URL... urls) {
