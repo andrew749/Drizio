@@ -1,9 +1,8 @@
 package com.andrew749.flickrwallpaper;
 
-import android.content.res.Resources;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.media.Image;
 import android.os.AsyncTask;
 import android.widget.ImageView;
 
@@ -22,15 +21,16 @@ import java.util.List;
  * Created by andrewcodispoti on 2015-05-09.
  */
 public class FlickrResult implements LinkFollowingCallback, ImageDownloadingInterface {
+    private static Bitmap fallbackBitmap;
+    private static String REST_ENDPOINT = "https://api.flickr.com/services/rest/";
+    ImageView iv;
     private String imageName;
     private URL url = null;
     private long id;
-    private static Bitmap fallbackBitmap;
-    private static String REST_ENDPOINT = "https://api.flickr.com/services/rest/";
     private Bitmap image=null;
-    ImageView iv;
+    private Context context;
     //simple model for a result containing the image and the url of the image.
-    public FlickrResult(String name, long id) {
+    public FlickrResult(String name, long id, Context context) {
         this.imageName = name;
         this.id = id;
         FollowUrl linkFollower = new FollowUrl(this);
@@ -72,24 +72,13 @@ public class FlickrResult implements LinkFollowingCallback, ImageDownloadingInte
     @Override
     public void downloadedImage(Bitmap bm) {
         this.image = bm;
+        LocalStorage storage = new LocalStorage(context);
+        storage.writeToExternalStorage(bm);
+
     }
 
     private class FollowUrl extends AsyncTask<Long, Void, URL> {
         LinkFollowingCallback callback;
-
-        private class SizesParent {
-            SizesResult sizes;
-        }
-
-        private class SizesResult {
-            List<Size> size;
-        }
-
-        public class Size {
-            String label;
-            int height, width;
-            String source;
-        }
 
         public FollowUrl(LinkFollowingCallback callback) {
             this.callback = callback;
@@ -109,18 +98,33 @@ public class FlickrResult implements LinkFollowingCallback, ImageDownloadingInte
 //                for (Size size : sizes) {
 //                    largestImage = new URL(size.source);
 //                }
-                largestImage=new URL(sizes.get(0).source);
+                largestImage = new URL(sizes.get(0).source);
             } catch (Exception e) {
                 e.printStackTrace();
             }
 
             return largestImage;
         }
+
         @Override
         protected void onPostExecute(URL url) {
             super.onPostExecute(url);
             callback.doneFollowing(url);
 
+        }
+
+        private class SizesParent {
+            SizesResult sizes;
+        }
+
+        private class SizesResult {
+            List<Size> size;
+        }
+
+        public class Size {
+            String label;
+            int height, width;
+            String source;
         }
     }
 
