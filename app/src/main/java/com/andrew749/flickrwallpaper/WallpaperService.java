@@ -13,21 +13,24 @@ import java.util.ArrayList;
  * Created by andrewcodispoti on 2015-05-10.
  */
 public class WallpaperService extends android.service.wallpaper.WallpaperService {
-    int x, y;
     private Paint paint = new Paint();
-
     @Override
     public Engine onCreateEngine() {
         return new PhotoEngine();
     }
 
-    class PhotoEngine extends Engine {
+    /**
+     * Subclass that handles downloading of images.
+     */
+    class PhotoEngine extends Engine implements ImageDownloadingInterface,ListDownloadingInterface {
         private final Handler handler = new Handler();
         ArrayList<Bitmap> images = new ArrayList<Bitmap>();
         Bitmap currentImage;
         LocalStorage storage;
         int index = 0;
         private boolean visible = true;
+
+
         private final Runnable runnable = new Runnable() {
             @Override
             public void run() {
@@ -48,6 +51,8 @@ public class WallpaperService extends android.service.wallpaper.WallpaperService
             paint.setColor(Color.BLUE);
             LocalStorage storage = new LocalStorage(getApplicationContext());
             images = storage.getImages();
+            FlickrSearcher searcher=new FlickrSearcher(this,getApplicationContext());
+            searcher.getImages();
         }
 
         @Override
@@ -85,10 +90,22 @@ public class WallpaperService extends android.service.wallpaper.WallpaperService
 
             handler.removeCallbacks(runnable);
             if (visible) {
-                handler.postDelayed(runnable, 10); // delay 10 mileseconds
+                handler.postDelayed(runnable, 10000); // delay 10 mileseconds
             }
 
         }
 
+        @Override
+        public boolean imageListIsDoneLoading(ArrayList<FlickrResult> result) {
+            for (FlickrResult x : result) {
+                x.getImageRequestandWait(this);
+            }
+            return true;
+        }
+
+        @Override
+        public void downloadedImage(Bitmap bm) {
+            images.add(bm);
+        }
     }
 }

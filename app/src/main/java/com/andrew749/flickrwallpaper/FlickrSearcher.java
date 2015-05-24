@@ -13,6 +13,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 /**
  * Created by andrewcodispoti on 2015-05-09.
@@ -49,6 +50,24 @@ public class FlickrSearcher {
         GetTopImages task = new GetTopImages();
         task.execute();
     }
+    //synchronous method to get the images.
+    public ArrayList<FlickrResult> getImagesSync(){
+        GetTopImages task=new GetTopImages();
+        try {
+            task.execute();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        try {
+            return task.get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
 
     //task to download image list
     private class GetTopImages extends AsyncTask<Void, Integer, ArrayList<FlickrResult>> {

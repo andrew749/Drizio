@@ -3,6 +3,7 @@ package com.andrew749.flickrwallpaper;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.Image;
 import android.os.AsyncTask;
 import android.widget.ImageView;
 
@@ -16,6 +17,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 /**
  * Created by andrewcodispoti on 2015-05-09.
@@ -24,10 +26,12 @@ public class FlickrResult implements LinkFollowingCallback, ImageDownloadingInte
     private static Bitmap fallbackBitmap;
     private static String REST_ENDPOINT = "https://api.flickr.com/services/rest/";
     ImageView iv;
+    ImageDownloadingInterface imageDownloadingInterface;
     private String imageName;
     private URL url = null;
     private long id;
     private Bitmap image=null;
+    private ImageDownloader imageDownloader=null;
     private Context context;
     //simple model for a result containing the image and the url of the image.
     public FlickrResult(String name, long id, Context context) {
@@ -58,6 +62,19 @@ public class FlickrResult implements LinkFollowingCallback, ImageDownloadingInte
             iv.setImageBitmap(this.image);
         }
     }
+    public void getImageRequestandWait(ImageDownloadingInterface imageDownloadingInterface){
+        if(this.image==null){
+            try {
+                this.image=this.imageDownloader.get();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            }
+        }
+        imageDownloadingInterface.downloadedImage(this.image);
+
+    }
     public String getName() {
         return imageName;
     }
@@ -65,7 +82,7 @@ public class FlickrResult implements LinkFollowingCallback, ImageDownloadingInte
     @Override
     public void doneFollowing(URL url) {
         this.url = url;
-        ImageDownloader imageDownloader=new ImageDownloader(this);
+        imageDownloader=new ImageDownloader(this);
         imageDownloader.execute(url);
     }
 
