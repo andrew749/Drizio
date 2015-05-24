@@ -2,6 +2,7 @@ package com.andrew749.flickrwallpaper;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Environment;
 
 import java.io.File;
@@ -54,12 +55,15 @@ public class LocalStorage {
         }
         return true;
     }
-
+    //read image files from Pictures Directory.
     public ArrayList<Bitmap> getImages() {
         if (!isExternalStorageReadable()) return null;
         ArrayList<Bitmap> images = new ArrayList<Bitmap>();
         File dir = context.getDir("Pictures", Context.MODE_PRIVATE);
-
+        File file[]=dir.listFiles();
+        for(File x: file){
+            images.add(BitmapFactory.decodeFile(x.getPath()));
+        }
         return images;
     }
 

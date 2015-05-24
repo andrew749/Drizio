@@ -90,7 +90,7 @@ public class WallpaperService extends android.service.wallpaper.WallpaperService
 
             handler.removeCallbacks(runnable);
             if (visible) {
-                handler.postDelayed(runnable, 10000); // delay 10 mileseconds
+                handler.postDelayed(runnable, 10000); // delay 10 seconds
             }
 
         }
