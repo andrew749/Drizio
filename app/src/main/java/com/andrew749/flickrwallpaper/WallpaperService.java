@@ -38,11 +38,13 @@ public class WallpaperService extends android.service.wallpaper.WallpaperService
                 if (index > images.size()) index = 0;
                 //gets the next image
                 if(images.size()>2)
-                currentImage = images.get(index++);
+                    currentImage = images.get(index++);
                 draw(currentImage);
                 if (images.size() - index < 2) {
                     //get more images
+                    int tempsize=images.size();
                     images.addAll(storage.getImages());
+                    if(images.size()-tempsize<5)index=0;
                 }
             }
         };
@@ -84,7 +86,9 @@ public class WallpaperService extends android.service.wallpaper.WallpaperService
                 c = holder.lockCanvas();
                 // clear the canvas
                 c.drawColor(Color.BLACK);
-                Bitmap fill=Bitmap.createScaledBitmap(bm,c.getWidth(),c.getHeight(),false);
+                int canvasWidth=c.getWidth(),canvasHeight=c.getHeight();
+                float scaleFactor=canvasHeight/bm.getHeight();
+                Bitmap fill=Bitmap.createScaledBitmap(bm,(int)(bm.getWidth()*scaleFactor),canvasHeight,false);
                 c.drawBitmap(fill, 0, 0, paint);
             } finally {
                 if (c != null)
