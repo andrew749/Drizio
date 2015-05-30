@@ -3,4 +3,7 @@
     <string name="action_settings">Settings</string>
     <string name="refresh">Refresh Rate:</string>
     <string name="cacheSize">Maximum Cache Size:</string>
+    <string name="refreshButtonTitle">Refresh</string>
+    <string name="clearButtonTitle">Clear Cache</string>
+    <string name="imageSizeTitle">Image Quality:</string>
 </resources>
