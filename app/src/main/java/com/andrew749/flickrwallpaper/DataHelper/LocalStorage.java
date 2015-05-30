@@ -86,6 +86,13 @@ public class LocalStorage {
         }
 
     }
+    public void deleteImage(String name){
+        if(!isExternalStorageReadable()||!isExternalStorageWritable())return;
+        File file=new File(directory+"/"+name);
+        if(file!=null){
+            file.delete();
+        }
+    }
 
 
 }

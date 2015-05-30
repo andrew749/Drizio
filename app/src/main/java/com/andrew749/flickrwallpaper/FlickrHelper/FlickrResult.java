@@ -65,18 +65,13 @@ public class FlickrResult implements LinkFollowingCallback, ImageDownloadingInte
             iv.setImageBitmap(this.image);
         }
     }
-    public void getImageRequestandWait(ImageDownloadingInterface imageDownloadingInterface){
+    public void getImageRequest(ImageDownloadingInterface imageDownloadingInterface){
         if(this.image==null){
-            try {
-                this.image=this.imageDownloader.get();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } catch (ExecutionException e) {
-                e.printStackTrace();
-            }
-        }
-        imageDownloadingInterface.downloadedImage(this.image);
+            this.imageDownloadingInterface=imageDownloadingInterface;
 
+        }else{
+            imageDownloadingInterface.downloadedImage(this.image);
+        }
     }
     public String getName() {
         return imageName;
@@ -175,6 +170,9 @@ public class FlickrResult implements LinkFollowingCallback, ImageDownloadingInte
             callback.downloadedImage(bitmap);
             if(iv!=null){
                 iv.setImageBitmap(bitmap);
+            }
+            if(imageDownloadingInterface!=null){
+                imageDownloadingInterface.downloadedImage(bitmap);
             }
         }
     }

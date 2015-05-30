@@ -13,6 +13,7 @@ import android.view.SurfaceHolder;
 
 import com.andrew749.flickrwallpaper.DataHelper.LocalStorage;
 import com.andrew749.flickrwallpaper.FlickrHelper.FlickrResult;
+import com.andrew749.flickrwallpaper.FlickrHelper.FlickrSearcher;
 import com.andrew749.flickrwallpaper.Fragments.SettingsFragment;
 import com.andrew749.flickrwallpaper.Interfaces.ImageDownloadingInterface;
 import com.andrew749.flickrwallpaper.Interfaces.ListDownloadingInterface;
@@ -24,21 +25,24 @@ import java.util.ArrayList;
  */
 public class WallpaperService extends android.service.wallpaper.WallpaperService implements SharedPreferences.OnSharedPreferenceChangeListener {
     private Paint paint = new Paint();
-    private int interval=1;
-    private int cacheSize=100;
-    private String imageSize="Large";
+    private int interval = 1;
+    private int cacheSize = 100;
+    private String imageSize = "Large";
+
     @Override
     public Engine onCreateEngine() {
         updateProperties();
-        getSharedPreferences(SettingsFragment.prefsName,Context.MODE_PRIVATE).registerOnSharedPreferenceChangeListener(this);
+        getSharedPreferences(SettingsFragment.prefsName, Context.MODE_PRIVATE).registerOnSharedPreferenceChangeListener(this);
         return new PhotoEngine();
     }
-    private void updateProperties(){
+
+    private void updateProperties() {
         //get preferences
-        cacheSize=getSharedPreferences(SettingsFragment.prefsName, Context.MODE_PRIVATE).getInt(SettingsFragment.cacheName,100);
-        interval=getSharedPreferences(SettingsFragment.prefsName, Context.MODE_PRIVATE).getInt(SettingsFragment.refreshName, 100);
-        imageSize=getSharedPreferences(SettingsFragment.prefsName, Context.MODE_PRIVATE).getString(SettingsFragment.imageName, "Large");
+        cacheSize = getSharedPreferences(SettingsFragment.prefsName, Context.MODE_PRIVATE).getInt(SettingsFragment.cacheName, 100);
+        interval = getSharedPreferences(SettingsFragment.prefsName, Context.MODE_PRIVATE).getInt(SettingsFragment.refreshName, 100);
+        imageSize = getSharedPreferences(SettingsFragment.prefsName, Context.MODE_PRIVATE).getString(SettingsFragment.imageName, "Large");
     }
+
     //easier just to update all rather than having to do string comparison
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
@@ -54,24 +58,37 @@ public class WallpaperService extends android.service.wallpaper.WallpaperService
         Bitmap currentImage;
         Bitmap oldImage;
         LocalStorage storage;
+        FlickrSearcher searcher;
         int index = 0;
+        ListDownloadingInterface listDownloadingInterface;
         private boolean visible = true;
-
 
         private final Runnable runnable = new Runnable() {
             @Override
             public void run() {
+                if (images.size() == 0) {
+                    searcher = new FlickrSearcher(listDownloadingInterface, getApplicationContext());
+                    searcher.getImages(cacheSize);
+                    handler.postDelayed(this,1000);
+                    return;
+                }
+                //go back in bounds
                 if (index > images.size()) index = 0;
+
                 //gets the next image
                 oldImage = currentImage;
-                if (images.size() > 2)
-                    currentImage = images.get(index++);
+
+                currentImage = images.get(index++);
                 draw(currentImage);
+
                 if (images.size() - index < 2) {
                     //get more images
-                    int tempsize = images.size();
-                    images.addAll(storage.getImages());
-                    if (images.size() - tempsize < 5) index = 0;
+                    if (searcher != null) {
+                        //hope that more stuff was downloaded
+                        searcher.getImages(cacheSize);
+                    }
+                    //cycle again if not that many images
+                    index = 0;
                 }
             }
         };
@@ -79,11 +96,10 @@ public class WallpaperService extends android.service.wallpaper.WallpaperService
         @Override
         public void onCreate(SurfaceHolder surfaceHolder) {
             super.onCreate(surfaceHolder);
-            paint.setColor(Color.BLUE);
-            LocalStorage storage = new LocalStorage(getApplicationContext());
+            paint.setColor(Color.WHITE);
+            storage = new LocalStorage(getApplicationContext());
+            listDownloadingInterface = this;
             images = storage.getImages();
-//            FlickrSearcher searcher=new FlickrSearcher(this,getApplicationContext());
-//            searcher.getImagesSync();
         }
 
         @Override
@@ -113,7 +129,7 @@ public class WallpaperService extends android.service.wallpaper.WallpaperService
                 int canvasWidth = c.getWidth(), canvasHeight = c.getHeight();
                 float scaleFactor = canvasHeight / bm.getHeight();
                 int scaledWidth = (int) (bm.getWidth() * scaleFactor);
-                int scaledHeight = (int) (bm.getHeight() * scaleFactor);
+//                int scaledHeight = (int) (bm.getHeight() * scaleFactor);
                 Bitmap fill;
                 if (scaledWidth > c.getWidth())
                     fill = Bitmap.createScaledBitmap(bm, scaledWidth, canvasHeight, false);
@@ -127,7 +143,7 @@ public class WallpaperService extends android.service.wallpaper.WallpaperService
             }
             handler.removeCallbacks(runnable);
             if (visible) {
-                handler.postDelayed(runnable, interval*1000*60);
+                handler.postDelayed(runnable, interval * 1000 * 60);
             }
 
         }
@@ -142,10 +158,12 @@ public class WallpaperService extends android.service.wallpaper.WallpaperService
                         if (oldImage != null) {
                             c.drawBitmap(oldImage, -x, 0, paint);
                         }
-                        if (c.getWidth() - x > (width/60))
-                            c.drawBitmap(currentImage, c.getWidth() - x, 0, paint);
-                        else
-                            c.drawBitmap(currentImage, 0, 0, paint);
+                        if (currentImage != null) {
+                            if (c.getWidth() - x > (width / 60))
+                                c.drawBitmap(currentImage, c.getWidth() - x, 0, paint);
+                            else
+                                c.drawBitmap(currentImage, 0, 0, paint);
+                        }
                     }
 
                     holder.unlockCanvasAndPost(c);
@@ -157,7 +175,7 @@ public class WallpaperService extends android.service.wallpaper.WallpaperService
         @Override
         public boolean imageListIsDoneLoading(ArrayList<FlickrResult> result) {
             for (FlickrResult x : result) {
-                x.getImageRequestandWait(this);
+                x.getImageRequest(this);
             }
             return true;
         }
