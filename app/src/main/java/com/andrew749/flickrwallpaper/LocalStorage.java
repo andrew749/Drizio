@@ -69,6 +69,7 @@ public class LocalStorage {
         if(file!=null)
         for(File x: file){
             images.add(BitmapFactory.decodeFile(x.getPath()));
+            if(images.size()==30)break;
         }
         return images;
     }
