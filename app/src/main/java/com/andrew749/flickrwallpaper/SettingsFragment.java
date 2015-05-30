@@ -76,6 +76,7 @@ public class SettingsFragment extends Fragment implements OnItemSelectedListener
 
                 break;
             case R.id.clearButton:
+                new LocalStorage(getActivity()).deleteImages();
                 break;
         }
     }
