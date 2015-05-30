@@ -15,6 +15,7 @@ import java.util.ArrayList;
  */
 public class WallpaperService extends android.service.wallpaper.WallpaperService {
     private Paint paint = new Paint();
+
     @Override
     public Engine onCreateEngine() {
         return new PhotoEngine();
@@ -23,10 +24,11 @@ public class WallpaperService extends android.service.wallpaper.WallpaperService
     /**
      * Subclass that handles downloading of images.
      */
-    class PhotoEngine extends Engine implements ImageDownloadingInterface,ListDownloadingInterface {
+    class PhotoEngine extends Engine implements ImageDownloadingInterface, ListDownloadingInterface {
         private final Handler handler = new Handler();
         ArrayList<Bitmap> images = new ArrayList<Bitmap>();
         Bitmap currentImage;
+        Bitmap oldImage;
         LocalStorage storage;
         int index = 0;
         private boolean visible = true;
@@ -37,14 +39,15 @@ public class WallpaperService extends android.service.wallpaper.WallpaperService
             public void run() {
                 if (index > images.size()) index = 0;
                 //gets the next image
-                if(images.size()>2)
+                oldImage = currentImage;
+                if (images.size() > 2)
                     currentImage = images.get(index++);
                 draw(currentImage);
                 if (images.size() - index < 2) {
                     //get more images
-                    int tempsize=images.size();
+                    int tempsize = images.size();
                     images.addAll(storage.getImages());
-                    if(images.size()-tempsize<5)index=0;
+                    if (images.size() - tempsize < 5) index = 0;
                 }
             }
         };
@@ -80,24 +83,49 @@ public class WallpaperService extends android.service.wallpaper.WallpaperService
         //draws the supplied image to the canvas
         void draw(Bitmap bm) {
             final SurfaceHolder holder = getSurfaceHolder();
-
-            Canvas c = null;
+            Canvas c = holder.lockCanvas();
             try {
-                c = holder.lockCanvas();
                 // clear the canvas
-                c.drawColor(Color.BLACK);
-                int canvasWidth=c.getWidth(),canvasHeight=c.getHeight();
-                float scaleFactor=canvasHeight/bm.getHeight();
-                Bitmap fill=Bitmap.createScaledBitmap(bm,(int)(bm.getWidth()*scaleFactor),canvasHeight,false);
-                c.drawBitmap(fill, 0, 0, paint);
+                int canvasWidth = c.getWidth(), canvasHeight = c.getHeight();
+                float scaleFactor = canvasHeight / bm.getHeight();
+                int scaledWidth = (int) (bm.getWidth() * scaleFactor);
+                int scaledHeight = (int) (bm.getHeight() * scaleFactor);
+                Bitmap fill;
+                if (scaledWidth > c.getWidth())
+                    fill = Bitmap.createScaledBitmap(bm, scaledWidth, canvasHeight, false);
+                else {
+                    fill = Bitmap.createScaledBitmap(bm, canvasWidth, canvasHeight, false);
+                }
+                currentImage = fill;
             } finally {
-                if (c != null)
-                    holder.unlockCanvasAndPost(c);
+                holder.unlockCanvasAndPost(c);
+                animatePicture(holder);
             }
-
             handler.removeCallbacks(runnable);
             if (visible) {
                 handler.postDelayed(runnable, 10000); // delay 10 seconds
+            }
+
+        }
+
+        private void animatePicture(SurfaceHolder holder) {
+            int width = 1;
+            for (int x = 0; x < width; x += (int) width / 60) {
+                Canvas c = holder.lockCanvas();
+                width = c.getWidth();
+                if (c != null) {
+                    synchronized (holder) {
+                        if (oldImage != null) {
+                            c.drawBitmap(oldImage, -x, 0, paint);
+                        }
+                        if (c.getWidth() - x > (width/60))
+                            c.drawBitmap(currentImage, c.getWidth() - x, 0, paint);
+                        else
+                            c.drawBitmap(currentImage, 0, 0, paint);
+                    }
+
+                    holder.unlockCanvasAndPost(c);
+                }
             }
 
         }
@@ -114,8 +142,8 @@ public class WallpaperService extends android.service.wallpaper.WallpaperService
         public void downloadedImage(Bitmap bm) {
             images.add(bm);
             Log.d("FlickrWallpaper", "added photo");
-            storage.writeToExternalStorage(bm,getApplicationContext());
-            Log.d(MainActivity.TAG,"wrote photo");
+            storage.writeToExternalStorage(bm, getApplicationContext());
+            Log.d(MainActivity.TAG, "wrote photo");
         }
     }
 }
