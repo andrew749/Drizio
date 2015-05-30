@@ -60,6 +60,7 @@
         android:layout_column="0"
         android:layout_columnSpan="2"
         android:layout_row="3"
+        android:id="@+id/refreshButton"
         android:text="@string/refreshButtonTitle" />
 
     <Button
@@ -68,5 +69,6 @@
         android:layout_column="0"
         android:layout_columnSpan="2"
         android:layout_row="4"
+        android:id="@+id/clearButton"
         android:text="@string/clearButtonTitle" />
 </GridLayout>
