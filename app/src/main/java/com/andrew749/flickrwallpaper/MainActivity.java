@@ -11,6 +11,7 @@ import java.util.ArrayList;
 public class MainActivity extends ActionBarActivity implements ListDownloadingInterface {
     MainActivityFragment fragment;
     LocalStorage storage;
+    public static final String TAG="FLICKRWALLPAPER";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

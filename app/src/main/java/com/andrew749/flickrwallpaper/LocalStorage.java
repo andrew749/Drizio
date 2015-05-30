@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Environment;
+import android.util.Log;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -16,9 +17,12 @@ import java.util.ArrayList;
  */
 public class LocalStorage {
     Context context;
-
+    private final String directory;
     public LocalStorage(Context context) {
         this.context = context;
+        directory=Environment.getExternalStorageDirectory().toString()+"/flickrwallpaper";
+        File mydir=new File(directory);
+        mydir.mkdirs();
     }
 
     /* Checks if external storage is available for read and write */
@@ -34,15 +38,16 @@ public class LocalStorage {
                 Environment.MEDIA_MOUNTED_READ_ONLY.equals(state);
     }
 
-    public boolean writeToExternalStorage(Bitmap bm) {
+    public boolean writeToExternalStorage(Bitmap bm,Context context) {
         if (!isExternalStorageWritable()) return false;
-        File directory = new File(String.valueOf(context.getExternalFilesDir("DIRECTORY_PICTURES")));
         FileOutputStream os = null;
+        //for pictures with spaces in the name.
+        File f=new File(directory+"/"+System.currentTimeMillis());
         try {
-            os = new FileOutputStream(directory);
+            os = new FileOutputStream(f);
             bm.compress(Bitmap.CompressFormat.JPEG, 100, os);
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            Log.d(MainActivity.TAG,"Failed to write to file");
             return false;
         } finally {
             try {
@@ -59,8 +64,9 @@ public class LocalStorage {
     public ArrayList<Bitmap> getImages() {
         if (!isExternalStorageReadable()) return null;
         ArrayList<Bitmap> images = new ArrayList<Bitmap>();
-        File dir = context.getDir("Pictures", Context.MODE_PRIVATE);
+        File dir = new File(directory+"/");
         File file[]=dir.listFiles();
+        if(file!=null)
         for(File x: file){
             images.add(BitmapFactory.decodeFile(x.getPath()));
         }

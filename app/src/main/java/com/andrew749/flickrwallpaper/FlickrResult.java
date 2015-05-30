@@ -35,6 +35,7 @@ public class FlickrResult implements LinkFollowingCallback, ImageDownloadingInte
     private Context context;
     //simple model for a result containing the image and the url of the image.
     public FlickrResult(String name, long id, Context context) {
+        this.context=context;
         this.imageName = name;
         this.id = id;
         FollowUrl linkFollower = new FollowUrl(this);
@@ -90,7 +91,7 @@ public class FlickrResult implements LinkFollowingCallback, ImageDownloadingInte
     public void downloadedImage(Bitmap bm) {
         this.image = bm;
         LocalStorage storage = new LocalStorage(context);
-        storage.writeToExternalStorage(bm);
+        storage.writeToExternalStorage(bm,context);
 
     }
 
@@ -112,10 +113,10 @@ public class FlickrResult implements LinkFollowingCallback, ImageDownloadingInte
                 SizesParent sizesParent = gson.fromJson(json, SizesParent.class);
                 SizesResult sizesResult = sizesParent.sizes;
                 List<Size> sizes = sizesResult.size;
-//                for (Size size : sizes) {
-//                    largestImage = new URL(size.source);
-//                }
-                largestImage = new URL(sizes.get(0).source);
+                for (Size size : sizes) {
+                    if(size.label.equals("Large"))
+                        largestImage = new URL(size.source);
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }

@@ -5,6 +5,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Handler;
+import android.util.Log;
 import android.view.SurfaceHolder;
 
 import java.util.ArrayList;
@@ -36,6 +37,7 @@ public class WallpaperService extends android.service.wallpaper.WallpaperService
             public void run() {
                 if (index > images.size()) index = 0;
                 //gets the next image
+                if(images.size()>2)
                 currentImage = images.get(index++);
                 draw(currentImage);
                 if (images.size() - index < 2) {
@@ -51,8 +53,8 @@ public class WallpaperService extends android.service.wallpaper.WallpaperService
             paint.setColor(Color.BLUE);
             LocalStorage storage = new LocalStorage(getApplicationContext());
             images = storage.getImages();
-            FlickrSearcher searcher=new FlickrSearcher(this,getApplicationContext());
-            searcher.getImages();
+//            FlickrSearcher searcher=new FlickrSearcher(this,getApplicationContext());
+//            searcher.getImagesSync();
         }
 
         @Override
@@ -82,7 +84,8 @@ public class WallpaperService extends android.service.wallpaper.WallpaperService
                 c = holder.lockCanvas();
                 // clear the canvas
                 c.drawColor(Color.BLACK);
-                c.drawBitmap(bm, 0, 0, paint);
+                Bitmap fill=Bitmap.createScaledBitmap(bm,c.getWidth(),c.getHeight(),false);
+                c.drawBitmap(fill, 0, 0, paint);
             } finally {
                 if (c != null)
                     holder.unlockCanvasAndPost(c);
@@ -106,6 +109,9 @@ public class WallpaperService extends android.service.wallpaper.WallpaperService
         @Override
         public void downloadedImage(Bitmap bm) {
             images.add(bm);
+            Log.d("FlickrWallpaper", "added photo");
+            storage.writeToExternalStorage(bm,getApplicationContext());
+            Log.d(MainActivity.TAG,"wrote photo");
         }
     }
 }
