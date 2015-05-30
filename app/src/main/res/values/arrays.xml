@@ -1,7 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="intervals">
-        <item>0</item>
+        <item>1 minute</item>
+        <item>2 minutes</item>
+        <item>3 minutes</item>
+        <item>4 minutes</item>
+        <item>5 minutes</item>
+        <item>10 minutes</item>
+        <item>30 minutes</item>
+        <item>60 minutes</item>
+    </string-array>
+    <integer-array name="intervals_value">
         <item>1</item>
         <item>2</item>
         <item>3</item>
@@ -10,8 +19,17 @@
         <item>10</item>
         <item>30</item>
         <item>60</item>
-    </string-array>
+    </integer-array>
     <string-array name="cache_size">
+        <item>5 pictures</item>
+        <item>10 pictures</item>
+        <item>15 pictures</item>
+        <item>20 pictures</item>
+        <item>30 pictures</item>
+        <item>50 pictures</item>
+        <item>100 pictures</item>
+    </string-array>
+    <integer-array name="cache_size_value">
         <item>5</item>
         <item>10</item>
         <item>15</item>
@@ -19,7 +37,7 @@
         <item>30</item>
         <item>50</item>
         <item>100</item>
-    </string-array>
+    </integer-array>
     <string-array name="quality_list">
         <item>Small</item>
         <item>Medium</item>

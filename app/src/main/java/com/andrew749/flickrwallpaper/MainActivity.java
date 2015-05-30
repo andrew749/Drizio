@@ -1,25 +1,29 @@
 package com.andrew749.flickrwallpaper;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import java.util.ArrayList;
 
 
-public class MainActivity extends ActionBarActivity implements ListDownloadingInterface {
+public class MainActivity extends AppCompatActivity implements ListDownloadingInterface {
     MainActivityFragment fragment;
     LocalStorage storage;
-    public static final String TAG="FLICKRWALLPAPER";
+    public static final String TAG = "FLICKRWALLPAPER";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        FlickrSearcher searcher = new FlickrSearcher(this, this);
-        fragment = (MainActivityFragment) getSupportFragmentManager().findFragmentById(R.id.fragment);
-        searcher.getImages();
-        storage = new LocalStorage(this);
+//        FlickrSearcher searcher = new FlickrSearcher(this, this);
+//        fragment = (MainActivityFragment) getSupportFragmentManager().findFragmentById(R.id.fragment);
+//        searcher.getImages();
+//        storage = new LocalStorage(this);
+        getFragmentManager().beginTransaction().add(R.id.fragment, new SettingsFragment()).commit();
     }
 
 
