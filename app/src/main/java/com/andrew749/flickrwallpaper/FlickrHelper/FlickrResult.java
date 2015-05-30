@@ -1,12 +1,14 @@
-package com.andrew749.flickrwallpaper;
+package com.andrew749.flickrwallpaper.FlickrHelper;
 
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.media.Image;
 import android.os.AsyncTask;
 import android.widget.ImageView;
 
+import com.andrew749.flickrwallpaper.Interfaces.ImageDownloadingInterface;
+import com.andrew749.flickrwallpaper.Interfaces.LinkFollowingCallback;
+import com.andrew749.flickrwallpaper.DataHelper.LocalStorage;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 

@@ -1,4 +1,4 @@
-package com.andrew749.flickrwallpaper;
+package com.andrew749.flickrwallpaper.Fragments;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -7,6 +7,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+
+import com.andrew749.flickrwallpaper.FlickrHelper.FlickrResult;
+import com.andrew749.flickrwallpaper.Adapters.ImageAdapter;
+import com.andrew749.flickrwallpaper.R;
 
 import java.util.ArrayList;
 

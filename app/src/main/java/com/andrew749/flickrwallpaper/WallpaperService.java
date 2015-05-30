@@ -1,24 +1,48 @@
 package com.andrew749.flickrwallpaper;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Handler;
+import android.preference.Preference;
 import android.util.Log;
 import android.view.SurfaceHolder;
+
+import com.andrew749.flickrwallpaper.DataHelper.LocalStorage;
+import com.andrew749.flickrwallpaper.FlickrHelper.FlickrResult;
+import com.andrew749.flickrwallpaper.Fragments.SettingsFragment;
+import com.andrew749.flickrwallpaper.Interfaces.ImageDownloadingInterface;
+import com.andrew749.flickrwallpaper.Interfaces.ListDownloadingInterface;
 
 import java.util.ArrayList;
 
 /**
  * Created by andrewcodispoti on 2015-05-10.
  */
-public class WallpaperService extends android.service.wallpaper.WallpaperService {
+public class WallpaperService extends android.service.wallpaper.WallpaperService implements SharedPreferences.OnSharedPreferenceChangeListener {
     private Paint paint = new Paint();
-
+    private int interval=1;
+    private int cacheSize=100;
+    private String imageSize="Large";
     @Override
     public Engine onCreateEngine() {
+        updateProperties();
+        getSharedPreferences(SettingsFragment.prefsName,Context.MODE_PRIVATE).registerOnSharedPreferenceChangeListener(this);
         return new PhotoEngine();
+    }
+    private void updateProperties(){
+        //get preferences
+        cacheSize=getSharedPreferences(SettingsFragment.prefsName, Context.MODE_PRIVATE).getInt(SettingsFragment.cacheName,100);
+        interval=getSharedPreferences(SettingsFragment.prefsName, Context.MODE_PRIVATE).getInt(SettingsFragment.refreshName, 100);
+        imageSize=getSharedPreferences(SettingsFragment.prefsName, Context.MODE_PRIVATE).getString(SettingsFragment.imageName, "Large");
+    }
+    //easier just to update all rather than having to do string comparison
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        updateProperties();
     }
 
     /**
@@ -103,7 +127,7 @@ public class WallpaperService extends android.service.wallpaper.WallpaperService
             }
             handler.removeCallbacks(runnable);
             if (visible) {
-                handler.postDelayed(runnable, 10000); // delay 10 seconds
+                handler.postDelayed(runnable, interval*1000*60);
             }
 
         }
@@ -141,9 +165,7 @@ public class WallpaperService extends android.service.wallpaper.WallpaperService
         @Override
         public void downloadedImage(Bitmap bm) {
             images.add(bm);
-            Log.d("FlickrWallpaper", "added photo");
             storage.writeToExternalStorage(bm, getApplicationContext());
-            Log.d(MainActivity.TAG, "wrote photo");
         }
     }
 }

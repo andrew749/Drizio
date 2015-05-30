@@ -1,4 +1,6 @@
-package com.andrew749.flickrwallpaper;
+package com.andrew749.flickrwallpaper.Interfaces;
+
+import com.andrew749.flickrwallpaper.FlickrHelper.FlickrResult;
 
 import java.util.ArrayList;
 

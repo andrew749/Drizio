@@ -1,8 +1,9 @@
-package com.andrew749.flickrwallpaper;
+package com.andrew749.flickrwallpaper.FlickrHelper;
 
 import android.content.Context;
 import android.os.AsyncTask;
 
+import com.andrew749.flickrwallpaper.Interfaces.ListDownloadingInterface;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -46,15 +47,15 @@ public class FlickrSearcher {
     }
 
     //void because task should execute callback when done
-    public void getImages() {
+    public void getImages(int number) {
         GetTopImages task = new GetTopImages();
-        task.execute();
+        task.execute(number);
     }
     //synchronous method to get the images.
-    public ArrayList<FlickrResult> getImagesSync(){
+    public ArrayList<FlickrResult> getImagesSync(int number){
         GetTopImages task=new GetTopImages();
         try {
-            task.execute();
+            task.execute(number);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -70,11 +71,12 @@ public class FlickrSearcher {
 
 
     //task to download image list
-    private class GetTopImages extends AsyncTask<Void, Integer, ArrayList<FlickrResult>> {
+    private class GetTopImages extends AsyncTask<Integer, Integer, ArrayList<FlickrResult>> {
         @Override
-        protected ArrayList<FlickrResult> doInBackground(Void... voids) {
+        protected ArrayList<FlickrResult> doInBackground(Integer... params) {
             ArrayList<FlickrResult> results = new ArrayList<FlickrResult>();
-            String queryParameter = "?method=flickr.interestingness.getList&api_key=6c30fdb8388402770932f08d6e367939&format=json&nojsoncallback=1";
+            int numImages=params[0];
+            String queryParameter = "?method=flickr.interestingness.getList&api_key=6c30fdb8388402770932f08d6e367939&format=json&nojsoncallback=1&per_page="+numImages;
             try {
                 URL url = new URL(REST_ENDPOINT + queryParameter);
                 Gson gson = new GsonBuilder().create();
@@ -93,8 +95,7 @@ public class FlickrSearcher {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            return results;
-        }
+            return results;        }
 
         @Override
         protected void onPostExecute(ArrayList<FlickrResult> flickrResults) {

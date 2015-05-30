@@ -1,17 +1,18 @@
-package com.andrew749.flickrwallpaper;
+package com.andrew749.flickrwallpaper.Adapters;
 
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.text.method.CharacterPickerDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
-import android.widget.SimpleAdapter;
 import android.widget.TextView;
+
+import com.andrew749.flickrwallpaper.FlickrHelper.FlickrResult;
+import com.andrew749.flickrwallpaper.FullSizeImage;
+import com.andrew749.flickrwallpaper.R;
 
 import java.util.ArrayList;
 

@@ -1,10 +1,12 @@
-package com.andrew749.flickrwallpaper;
+package com.andrew749.flickrwallpaper.DataHelper;
 
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Environment;
 import android.util.Log;
+
+import com.andrew749.flickrwallpaper.MainActivity;
 
 import java.io.File;
 import java.io.FileNotFoundException;

@@ -1,4 +1,4 @@
-package com.andrew749.flickrwallpaper;
+package com.andrew749.flickrwallpaper.Fragments;
 
 import android.app.Activity;
 import android.app.Fragment;
@@ -14,6 +14,10 @@ import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.Button;
 import android.widget.Spinner;
 
+import com.andrew749.flickrwallpaper.DataHelper.LocalStorage;
+import com.andrew749.flickrwallpaper.Interfaces.RefreshController;
+import com.andrew749.flickrwallpaper.R;
+
 /**
  * Created by andrewcodispoti on 2015-05-30.
  */
@@ -21,6 +25,11 @@ public class SettingsFragment extends Fragment implements OnItemSelectedListener
     Spinner refresh,cache,quality;
     Button refreshImages,clearImages;
     SharedPreferences prefs;
+    RefreshController callback=null;
+    public static final String prefsName="FlickrWallpaperPrefs";
+    public static final String cacheName="cache_size";
+    public static final String refreshName="refresh_rate";
+    public static final String imageName="image_size";
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
@@ -29,7 +38,7 @@ public class SettingsFragment extends Fragment implements OnItemSelectedListener
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        prefs=getActivity().getSharedPreferences("FlickrWallpaperPrefs", Context.MODE_PRIVATE);
+        prefs=getActivity().getSharedPreferences(prefsName, Context.MODE_PRIVATE);
     }
 
     @Nullable
@@ -49,6 +58,9 @@ public class SettingsFragment extends Fragment implements OnItemSelectedListener
         return view;
     }
 
+    public void setCallback(RefreshController callback){
+        this.callback=callback;
+    }
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -73,7 +85,9 @@ public class SettingsFragment extends Fragment implements OnItemSelectedListener
     public void onClick(View v) {
         switch(v.getId()){
             case R.id.refreshButton:
-
+                if(callback!=null){
+                    callback.refresh();
+                }
                 break;
             case R.id.clearButton:
                 new LocalStorage(getActivity()).deleteImages();
