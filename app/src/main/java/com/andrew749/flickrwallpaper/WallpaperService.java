@@ -7,7 +7,6 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Handler;
-import android.preference.Preference;
 import android.util.Log;
 import android.view.SurfaceHolder;
 
@@ -25,7 +24,7 @@ import java.util.ArrayList;
  */
 public class WallpaperService extends android.service.wallpaper.WallpaperService implements SharedPreferences.OnSharedPreferenceChangeListener {
     private Paint paint = new Paint();
-    private int interval = 1;
+    private String interval = "1";
     private int cacheSize = 100;
     private String imageSize = "Large";
 
@@ -39,7 +38,7 @@ public class WallpaperService extends android.service.wallpaper.WallpaperService
     private void updateProperties() {
         //get preferences
         cacheSize = getSharedPreferences(SettingsFragment.prefsName, Context.MODE_PRIVATE).getInt(SettingsFragment.cacheName, 100);
-        interval = getSharedPreferences(SettingsFragment.prefsName, Context.MODE_PRIVATE).getInt(SettingsFragment.refreshName, 100);
+        interval = getSharedPreferences(SettingsFragment.prefsName, Context.MODE_PRIVATE).getString(SettingsFragment.refreshName, "1");
         imageSize = getSharedPreferences(SettingsFragment.prefsName, Context.MODE_PRIVATE).getString(SettingsFragment.imageName, "Large");
     }
 
@@ -54,44 +53,55 @@ public class WallpaperService extends android.service.wallpaper.WallpaperService
      */
     class PhotoEngine extends Engine implements ImageDownloadingInterface, ListDownloadingInterface {
         private final Handler handler = new Handler();
-        ArrayList<Bitmap> images = new ArrayList<Bitmap>();
-        Bitmap currentImage;
-        Bitmap oldImage;
+        ArrayList<String> imageNames = new ArrayList<>();
+        int index = 0;
         LocalStorage storage;
         FlickrSearcher searcher;
-        int index = 0;
+        Bitmap previous, current;
         ListDownloadingInterface listDownloadingInterface;
         private boolean visible = true;
 
         private final Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                if (images.size() == 0) {
+                //do a query to get more images if anything changes or if its the first run
+                if (imageNames.size() == 0 ) {
                     searcher = new FlickrSearcher(listDownloadingInterface, getApplicationContext());
                     searcher.getImages(cacheSize);
-                    handler.postDelayed(this,1000);
+                    checkForNewImage();
+                    handler.postDelayed(this, 1000);
                     return;
                 }
+
                 //go back in bounds
-                if (index > images.size()) index = 0;
+                if (index > imageNames.size() - 1) index = 0;
 
-                //gets the next image
-                oldImage = currentImage;
-
-                currentImage = images.get(index++);
-                draw(currentImage);
-
-                if (images.size() - index < 2) {
-                    //get more images
-                    if (searcher != null) {
-                        //hope that more stuff was downloaded
-                        searcher.getImages(cacheSize);
-                    }
-                    //cycle again if not that many images
-                    index = 0;
-                }
+                draw();
             }
         };
+
+        private void checkForNewImage() {
+            //when getting close to end
+            ArrayList<String> updatedNames = storage.getImageNames();
+
+            //check to see if the image already exists in the array.
+            for (String imageName : updatedNames) {
+                //if flag =0 then don't add the image
+                int flag = 1;
+                for (String imageName2 : imageNames) {
+                    if (imageName.equals(imageName2)) {
+                        flag = 0;
+                        break;
+                    }
+                }
+                if (flag == 1) {
+                    imageNames.add(imageName);
+                    Log.d("Flickr","Adding new image");
+                }
+
+            }
+
+        }
 
         @Override
         public void onCreate(SurfaceHolder surfaceHolder) {
@@ -99,7 +109,7 @@ public class WallpaperService extends android.service.wallpaper.WallpaperService
             paint.setColor(Color.WHITE);
             storage = new LocalStorage(getApplicationContext());
             listDownloadingInterface = this;
-            images = storage.getImages();
+            imageNames.addAll(storage.getImageNames());
         }
 
         @Override
@@ -121,29 +131,30 @@ public class WallpaperService extends android.service.wallpaper.WallpaperService
         }
 
         //draws the supplied image to the canvas
-        void draw(Bitmap bm) {
+        void draw() {
             final SurfaceHolder holder = getSurfaceHolder();
             Canvas c = holder.lockCanvas();
+            previous = current;
+            current = storage.getImage(imageNames.get(index++));
             try {
                 // clear the canvas
                 int canvasWidth = c.getWidth(), canvasHeight = c.getHeight();
-                float scaleFactor = canvasHeight / bm.getHeight();
-                int scaledWidth = (int) (bm.getWidth() * scaleFactor);
-//                int scaledHeight = (int) (bm.getHeight() * scaleFactor);
+                float scaleFactor = canvasHeight / current.getHeight();
+                int scaledWidth = (int) (current.getWidth() * scaleFactor);
                 Bitmap fill;
                 if (scaledWidth > c.getWidth())
-                    fill = Bitmap.createScaledBitmap(bm, scaledWidth, canvasHeight, false);
+                    fill = Bitmap.createScaledBitmap(current, scaledWidth, canvasHeight, false);
                 else {
-                    fill = Bitmap.createScaledBitmap(bm, canvasWidth, canvasHeight, false);
+                    fill = Bitmap.createScaledBitmap(current, canvasWidth, canvasHeight, false);
                 }
-                currentImage = fill;
+                current = fill;
             } finally {
                 holder.unlockCanvasAndPost(c);
                 animatePicture(holder);
             }
             handler.removeCallbacks(runnable);
             if (visible) {
-                handler.postDelayed(runnable, interval * 1000 * 60);
+                handler.postDelayed(runnable, (long) (Double.parseDouble(interval) * 1000 * 60));
             }
 
         }
@@ -153,16 +164,17 @@ public class WallpaperService extends android.service.wallpaper.WallpaperService
             for (int x = 0; x < width; x += (int) width / 60) {
                 Canvas c = holder.lockCanvas();
                 width = c.getWidth();
+                c.drawColor(Color.BLACK);
                 if (c != null) {
                     synchronized (holder) {
-                        if (oldImage != null) {
-                            c.drawBitmap(oldImage, -x, 0, paint);
+                        if (previous != null) {
+                            c.drawBitmap(previous, -x, 0, paint);
                         }
-                        if (currentImage != null) {
+                        if (index >= 0) {
                             if (c.getWidth() - x > (width / 60))
-                                c.drawBitmap(currentImage, c.getWidth() - x, 0, paint);
+                                c.drawBitmap(current, c.getWidth() - x, 0, paint);
                             else
-                                c.drawBitmap(currentImage, 0, 0, paint);
+                                c.drawBitmap(current, 0, 0, paint);
                         }
                     }
 
@@ -181,9 +193,9 @@ public class WallpaperService extends android.service.wallpaper.WallpaperService
         }
 
         @Override
-        public void downloadedImage(Bitmap bm) {
-            images.add(bm);
-            storage.writeToExternalStorage(bm, getApplicationContext());
+        public void downloadedImage(Bitmap bm, String name) {
+            imageNames.add(name);
+            storage.writeToExternalStorage(name, bm, getApplicationContext());
         }
     }
 }

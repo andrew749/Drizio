@@ -40,6 +40,7 @@ public class FlickrResult implements LinkFollowingCallback, ImageDownloadingInte
         this.context=context;
         this.imageName = name;
         this.id = id;
+        this.imageDownloadingInterface=this;
         FollowUrl linkFollower = new FollowUrl(this);
         linkFollower.execute(id);
     }
@@ -55,6 +56,7 @@ public class FlickrResult implements LinkFollowingCallback, ImageDownloadingInte
     public URL getUrl() {
         return url;
     }
+
     public Bitmap getImage(){
         return this.image;
     }
@@ -68,9 +70,8 @@ public class FlickrResult implements LinkFollowingCallback, ImageDownloadingInte
     public void getImageRequest(ImageDownloadingInterface imageDownloadingInterface){
         if(this.image==null){
             this.imageDownloadingInterface=imageDownloadingInterface;
-
         }else{
-            imageDownloadingInterface.downloadedImage(this.image);
+            imageDownloadingInterface.downloadedImage(this.image,imageName);
         }
     }
     public String getName() {
@@ -80,15 +81,15 @@ public class FlickrResult implements LinkFollowingCallback, ImageDownloadingInte
     @Override
     public void doneFollowing(URL url) {
         this.url = url;
-        imageDownloader=new ImageDownloader(this);
+        imageDownloader=new ImageDownloader();
         imageDownloader.execute(url);
     }
 
     @Override
-    public void downloadedImage(Bitmap bm) {
+    public void downloadedImage(Bitmap bm,String name) {
         this.image = bm;
         LocalStorage storage = new LocalStorage(context);
-        storage.writeToExternalStorage(bm,context);
+        storage.writeToExternalStorage(name,bm,context);
 
     }
 
@@ -144,10 +145,6 @@ public class FlickrResult implements LinkFollowingCallback, ImageDownloadingInte
     }
 
     private class ImageDownloader extends AsyncTask<URL, Integer, Bitmap> {
-        ImageDownloadingInterface callback;
-        public ImageDownloader(ImageDownloadingInterface callback) {
-            this.callback = callback;
-        }
         @Override
         protected Bitmap doInBackground(URL... urls) {
             Bitmap result = null;
@@ -167,12 +164,13 @@ public class FlickrResult implements LinkFollowingCallback, ImageDownloadingInte
         @Override
         protected void onPostExecute(Bitmap bitmap) {
             super.onPostExecute(bitmap);
-            callback.downloadedImage(bitmap);
+            //set an imageview for the graphical aspect
             if(iv!=null){
                 iv.setImageBitmap(bitmap);
             }
+            //more abstract callback
             if(imageDownloadingInterface!=null){
-                imageDownloadingInterface.downloadedImage(bitmap);
+                imageDownloadingInterface.downloadedImage(bitmap,imageName);
             }
         }
     }

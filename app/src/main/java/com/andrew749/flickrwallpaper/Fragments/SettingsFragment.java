@@ -69,7 +69,7 @@ public class SettingsFragment extends Fragment implements OnItemSelectedListener
                 prefs.edit().putInt("cache_size",getResources().getIntArray(R.array.cache_size_value)[position]).commit();
                 break;
             case R.id.spinnerRate:
-                prefs.edit().putInt("refresh_rate",getResources().getIntArray(R.array.intervals_value)[position]).commit();
+                prefs.edit().putString("refresh_rate",getResources().getStringArray(R.array.intervals_value)[position]).commit();
                 break;
             case R.id.imageSizeSelector:
                 prefs.edit().putString("image_size",getResources().getStringArray(R.array.quality_list)[position]).commit();

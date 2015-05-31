@@ -40,11 +40,13 @@ public class LocalStorage {
                 Environment.MEDIA_MOUNTED_READ_ONLY.equals(state);
     }
 
-    public boolean writeToExternalStorage(Bitmap bm,Context context) {
+    public boolean writeToExternalStorage(String imageName,Bitmap bm,Context context) {
         if (!isExternalStorageWritable()) return false;
         FileOutputStream os = null;
-        //for pictures with spaces in the name.
-        File f=new File(directory+"/"+System.currentTimeMillis());
+        File f=new File(directory+"/"+imageName);
+        // dont make multiple copies
+        if(f.exists())return true;
+        //write to an output stream.
         try {
             os = new FileOutputStream(f);
             bm.compress(Bitmap.CompressFormat.JPEG, 100, os);
@@ -63,18 +65,36 @@ public class LocalStorage {
         return true;
     }
     //read image files from Pictures Directory.
-    public ArrayList<Bitmap> getImages() {
+    public ArrayList<LocalImage> getImages() {
         if (!isExternalStorageReadable()) return null;
-        ArrayList<Bitmap> images = new ArrayList<Bitmap>();
+        ArrayList<LocalImage> images=new ArrayList<>();
         File dir = new File(directory+"/");
         File file[]=dir.listFiles();
         if(file!=null)
         for(File x: file){
-            images.add(BitmapFactory.decodeFile(x.getPath()));
-            if(images.size()==30)break;
+            images.add(new LocalImage(BitmapFactory.decodeFile(x.getPath()),x.getName()));
         }
         return images;
     }
+    public ArrayList<String> getImageNames(){
+        if (!isExternalStorageReadable()) return null;
+        ArrayList<String> images=new ArrayList<>();
+        File dir = new File(directory+"/");
+        File file[]=dir.listFiles();
+        if(file!=null)
+            for(File x: file){
+                images.add(x.getName());
+                if(images.size()==30) break;
+            }
+        return images;
+    }
+    public Bitmap getImage(String name){
+        File dir = new File(directory+"/"+name);
+        if(dir!=null)
+            return BitmapFactory.decodeFile(dir.getPath());
+        return null;
+    }
+
     public void deleteImages(){
         if(!isExternalStorageReadable()||!isExternalStorageWritable())return;
         File dir = new File(directory+"/");
