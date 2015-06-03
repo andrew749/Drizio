@@ -137,27 +137,28 @@ public class WallpaperService extends android.service.wallpaper.WallpaperService
             Canvas c = holder.lockCanvas();
             previous = current;
             current = storage.getImage(imageNames.get(index++));
-            try {
-                // clear the canvas
-                int canvasWidth = c.getWidth(), canvasHeight = c.getHeight();
-                float scaleFactor = canvasHeight / current.getHeight();
-                int scaledWidth = (int) (current.getWidth() * scaleFactor);
-                Bitmap fill;
-                if (scaledWidth > c.getWidth())
-                    fill = Bitmap.createScaledBitmap(current, scaledWidth, canvasHeight, false);
-                else {
-                    fill = Bitmap.createScaledBitmap(current, canvasWidth, canvasHeight, false);
+            if(current!=null) {
+                try {
+                    // clear the canvas
+                    int canvasWidth = c.getWidth(), canvasHeight = c.getHeight();
+                    float scaleFactor = canvasHeight / current.getHeight();
+                    int scaledWidth = (int) (current.getWidth() * scaleFactor);
+                    Bitmap fill;
+                    if (scaledWidth > c.getWidth())
+                        fill = Bitmap.createScaledBitmap(current, scaledWidth, canvasHeight, false);
+                    else {
+                        fill = Bitmap.createScaledBitmap(current, canvasWidth, canvasHeight, false);
+                    }
+                    current = fill;
+                } finally {
+                    holder.unlockCanvasAndPost(c);
+                    animatePicture(holder);
                 }
-                current = fill;
-            } finally {
-                holder.unlockCanvasAndPost(c);
-                animatePicture(holder);
+                handler.removeCallbacks(runnable);
+                if (visible) {
+                    handler.postDelayed(runnable, (long) (Double.parseDouble(interval) * 1000 * 60));
+                }
             }
-            handler.removeCallbacks(runnable);
-            if (visible) {
-                handler.postDelayed(runnable, (long) (Double.parseDouble(interval) * 1000 * 60));
-            }
-
         }
 
         private void animatePicture(SurfaceHolder holder) {
@@ -171,7 +172,7 @@ public class WallpaperService extends android.service.wallpaper.WallpaperService
                         if (previous != null) {
                             c.drawBitmap(previous, -x, 0, paint);
                         }
-                        if (index >= 0) {
+                        if (index >= 0 &&current!=null) {
                             if (c.getWidth() - x > (width / 60))
                                 c.drawBitmap(current, c.getWidth() - x, 0, paint);
                             else
