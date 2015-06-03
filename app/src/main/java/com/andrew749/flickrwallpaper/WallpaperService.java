@@ -77,6 +77,9 @@ public class WallpaperService extends android.service.wallpaper.WallpaperService
                 if (index > imageNames.size() - 1) index = 0;
 
                 draw();
+                if(imageNames.size()!=cacheSize){
+                    checkForNewImage();
+                }
             }
         };
 

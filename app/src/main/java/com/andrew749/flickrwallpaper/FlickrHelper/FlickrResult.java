@@ -41,8 +41,14 @@ public class FlickrResult implements LinkFollowingCallback, ImageDownloadingInte
         this.imageName = name;
         this.id = id;
         this.imageDownloadingInterface=this;
-        FollowUrl linkFollower = new FollowUrl(this);
-        linkFollower.execute(id);
+        LocalStorage storage=new LocalStorage(context).imageExists(name)
+        if(!(storage.imageExists(name))) {
+            FollowUrl linkFollower = new FollowUrl(this);
+            linkFollower.execute(id);
+        }
+        else{
+            this.image=storage.getImage(name);
+        }
     }
 
     public long getId() {

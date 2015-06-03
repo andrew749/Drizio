@@ -20,13 +20,19 @@ import java.util.ArrayList;
 public class LocalStorage {
     Context context;
     private final String directory;
+    private LocalStorage storage;
     public LocalStorage(Context context) {
         this.context = context;
         directory=Environment.getExternalStorageDirectory().toString()+"/flickrwallpaper";
         File mydir=new File(directory);
         mydir.mkdirs();
     }
-
+    public static LocalStorage getInstance(){
+        if(storage==null){
+            storage=new LocalStorage(getApplicationContext());
+        }
+        return storage;
+    }
     /* Checks if external storage is available for read and write */
     public boolean isExternalStorageWritable() {
         String state = Environment.getExternalStorageState();
@@ -112,6 +118,14 @@ public class LocalStorage {
         if(file!=null){
             file.delete();
         }
+    }
+    public boolean imageExists(String name){
+        File file=new File(directory+"/"+name);
+        if(file!=null){
+            return true;
+        }
+        else
+            return false;
     }
 
 

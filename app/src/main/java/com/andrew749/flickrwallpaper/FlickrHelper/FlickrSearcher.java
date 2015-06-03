@@ -51,24 +51,6 @@ public class FlickrSearcher {
         GetTopImages task = new GetTopImages();
         task.execute(number);
     }
-    //synchronous method to get the images.
-    public ArrayList<FlickrResult> getImagesSync(int number){
-        GetTopImages task=new GetTopImages();
-        try {
-            task.execute(number);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        try {
-            return task.get();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
 
     //task to download image list
     private class GetTopImages extends AsyncTask<Integer, Integer, ArrayList<FlickrResult>> {
@@ -87,7 +69,6 @@ public class FlickrSearcher {
                 for (FlickrPhoto photo : photos) {
                     results.add(new FlickrResult(photo.title, photo.id, context));
                 }
-                //TODO create arraylist of flickr results with response
             } catch (MalformedURLException e) {
                 e.printStackTrace();
             } catch (IOException e) {
