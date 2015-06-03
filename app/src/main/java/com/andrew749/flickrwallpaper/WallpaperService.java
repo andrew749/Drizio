@@ -51,14 +51,13 @@ public class WallpaperService extends android.service.wallpaper.WallpaperService
     /**
      * Subclass that handles downloading of images.
      */
-    class PhotoEngine extends Engine implements ImageDownloadingInterface, ListDownloadingInterface {
+    class PhotoEngine extends Engine {
         private final Handler handler = new Handler();
         ArrayList<String> imageNames = new ArrayList<>();
         int index = 0;
         LocalStorage storage;
         FlickrSearcher searcher;
         Bitmap previous, current;
-        ListDownloadingInterface listDownloadingInterface;
         private boolean visible = true;
 
         private final Runnable runnable = new Runnable() {
@@ -66,7 +65,7 @@ public class WallpaperService extends android.service.wallpaper.WallpaperService
             public void run() {
                 //do a query to get more images if anything changes or if its the first run
                 if (imageNames.size() == 0 ) {
-                    searcher = new FlickrSearcher(listDownloadingInterface, getApplicationContext());
+                    searcher = new FlickrSearcher(getApplicationContext());
                     searcher.getImages(cacheSize);
                     checkForNewImage();
                     handler.postDelayed(this, 1000);
@@ -110,8 +109,7 @@ public class WallpaperService extends android.service.wallpaper.WallpaperService
         public void onCreate(SurfaceHolder surfaceHolder) {
             super.onCreate(surfaceHolder);
             paint.setColor(Color.WHITE);
-            storage = new LocalStorage(getApplicationContext());
-            listDownloadingInterface = this;
+            storage = LocalStorage.getInstance(getApplicationContext());
             imageNames.addAll(storage.getImageNames());
         }
 
@@ -185,20 +183,6 @@ public class WallpaperService extends android.service.wallpaper.WallpaperService
                 }
             }
 
-        }
-
-        @Override
-        public boolean imageListIsDoneLoading(ArrayList<FlickrResult> result) {
-            for (FlickrResult x : result) {
-                x.getImageRequest(this);
-            }
-            return true;
-        }
-
-        @Override
-        public void downloadedImage(Bitmap bm, String name) {
-            imageNames.add(name);
-            storage.writeToExternalStorage(name, bm, getApplicationContext());
         }
     }
 }

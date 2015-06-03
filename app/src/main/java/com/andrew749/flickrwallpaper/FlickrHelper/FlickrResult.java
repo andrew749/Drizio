@@ -35,13 +35,14 @@ public class FlickrResult implements LinkFollowingCallback, ImageDownloadingInte
     private Bitmap image=null;
     private ImageDownloader imageDownloader=null;
     private Context context;
+    private LocalStorage storage;
     //simple model for a result containing the image and the url of the image.
     public FlickrResult(String name, long id, Context context) {
         this.context=context;
         this.imageName = name;
         this.id = id;
         this.imageDownloadingInterface=this;
-        LocalStorage storage=LocalStorage.getInstance(context);
+        storage=LocalStorage.getInstance(context);
         if(!(storage.imageExists(name))) {
             FollowUrl linkFollower = new FollowUrl(this);
             linkFollower.execute(id);
@@ -177,6 +178,9 @@ public class FlickrResult implements LinkFollowingCallback, ImageDownloadingInte
             //more abstract callback
             if(imageDownloadingInterface!=null){
                 imageDownloadingInterface.downloadedImage(bitmap,imageName);
+            }
+            if(!storage.imageExists(imageName)){
+                storage.writeToExternalStorage(imageName,bitmap,context);
             }
         }
     }

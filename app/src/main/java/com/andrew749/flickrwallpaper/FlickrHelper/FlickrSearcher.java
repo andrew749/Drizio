@@ -3,6 +3,7 @@ package com.andrew749.flickrwallpaper.FlickrHelper;
 import android.content.Context;
 import android.os.AsyncTask;
 
+import com.andrew749.flickrwallpaper.Interfaces.LinkFollowingCallback;
 import com.andrew749.flickrwallpaper.Interfaces.ListDownloadingInterface;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -19,13 +20,11 @@ import java.util.concurrent.ExecutionException;
 /**
  * Created by andrewcodispoti on 2015-05-09.
  */
-public class FlickrSearcher {
+public class FlickrSearcher{
     private static String REST_ENDPOINT = "https://api.flickr.com/services/rest/";
-    ListDownloadingInterface downloadingInterface;
     Context context;
 
-    public FlickrSearcher(ListDownloadingInterface downloadingInterface, Context context) {
-        this.downloadingInterface = downloadingInterface;
+    public FlickrSearcher(Context context) {
         this.context = context;
     }
 
@@ -77,13 +76,6 @@ public class FlickrSearcher {
                 e.printStackTrace();
             }
             return results;        }
-
-        @Override
-        protected void onPostExecute(ArrayList<FlickrResult> flickrResults) {
-            super.onPostExecute(flickrResults);
-            if (!flickrResults.isEmpty())
-                downloadingInterface.imageListIsDoneLoading(flickrResults);
-        }
 
         public class FlickrPhoto {
             public long id;

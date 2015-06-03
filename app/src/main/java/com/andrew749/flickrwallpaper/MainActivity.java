@@ -28,7 +28,7 @@ public class MainActivity extends AppCompatActivity implements ListDownloadingIn
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        storage = new LocalStorage(this);
+        storage = LocalStorage.getInstance(getApplicationContext());
         mainActivityFragment = (MainActivityFragment) getSupportFragmentManager().findFragmentById(R.id.listfragment);
         settingsFragment=(SettingsFragment)getFragmentManager().findFragmentById(R.id.fragment);
         settingsFragment.setCallback(this);
@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity implements ListDownloadingIn
 
     @Override
     public void refresh() {
-        FlickrSearcher searcher = new FlickrSearcher(this, this);
+        FlickrSearcher searcher = new FlickrSearcher(this);
         searcher.getImages(getSharedPreferences(SettingsFragment.prefsName, Context.MODE_PRIVATE).getInt(SettingsFragment.cacheName,100));
     }
 }

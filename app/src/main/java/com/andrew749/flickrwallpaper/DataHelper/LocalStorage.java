@@ -121,11 +121,7 @@ public class LocalStorage {
     }
     public boolean imageExists(String name){
         File file=new File(directory+"/"+name);
-        if(file!=null){
-            return true;
-        }
-        else
-            return false;
+        return file.exists();
     }
 
 
