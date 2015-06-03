@@ -20,16 +20,16 @@ import java.util.ArrayList;
 public class LocalStorage {
     Context context;
     private final String directory;
-    private LocalStorage storage;
+    private static LocalStorage storage;
     public LocalStorage(Context context) {
         this.context = context;
         directory=Environment.getExternalStorageDirectory().toString()+"/flickrwallpaper";
         File mydir=new File(directory);
         mydir.mkdirs();
     }
-    public static LocalStorage getInstance(){
+    public static LocalStorage getInstance(Context context){
         if(storage==null){
-            storage=new LocalStorage(getApplicationContext());
+            storage=new LocalStorage(context);
         }
         return storage;
     }
