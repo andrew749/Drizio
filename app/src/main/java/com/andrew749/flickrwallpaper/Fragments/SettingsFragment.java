@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
 
@@ -55,6 +56,11 @@ public class SettingsFragment extends Fragment implements OnItemSelectedListener
         quality.setOnItemSelectedListener(this);
         refreshImages.setOnClickListener(this);
         clearImages.setOnClickListener(this);
+        ArrayAdapter radapter=(ArrayAdapter)refresh.getAdapter(),cadapter=(ArrayAdapter)cache.getAdapter(),qadapter=(ArrayAdapter)quality.getAdapter();
+        refresh.setSelection(radapter.getPosition(prefs.getString("refresh_rate",".1")));
+        cache.setSelection(cadapter.getPosition(prefs.getInt("cache_size",5)));
+        quality.setSelection(qadapter.getPosition(prefs.getString("image_size","Small")));
+
         return view;
     }
 
