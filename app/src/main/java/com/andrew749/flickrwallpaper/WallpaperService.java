@@ -16,6 +16,8 @@ import com.andrew749.flickrwallpaper.Fragments.SettingsFragment;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Created by andrewcodispoti on 2015-05-10.
@@ -25,7 +27,7 @@ public class WallpaperService extends android.service.wallpaper.WallpaperService
     private String interval = ".1";
     private int cacheSize = 100;
     private String imageSize = "Large";
-
+    Timer timer=new Timer();
     @Override
     public Engine onCreateEngine() {
         updateProperties();
@@ -103,13 +105,29 @@ public class WallpaperService extends android.service.wallpaper.WallpaperService
             }
 
         }
+        private TimerTask task=new TimerTask() {
+            @Override
+            public void run() {
+                long lastUpdate=getSharedPreferences(SettingsFragment.prefsName,Context.MODE_PRIVATE).getLong("lastUpdate",0);
+                long diff= System.currentTimeMillis()-lastUpdate;
+                if(storage!=null&&diff!=0&&diff>1000){
+                    Log.d("flickr", "do update stuff here");
+                    storage.deleteImages();
+                    if(searcher==null)
+                        searcher=new FlickrSearcher(getApplicationContext());
+                    searcher.getImages(cacheSize);
 
+                    imageNames.clear();
+                }
+            }
+        };
         @Override
         public void onCreate(SurfaceHolder surfaceHolder) {
             super.onCreate(surfaceHolder);
             paint.setColor(Color.WHITE);
             storage = LocalStorage.getInstance(getApplicationContext());
             imageNames.addAll(storage.getImageNames());
+            timer.schedule(task,1000,86400000);
         }
 
         @Override
