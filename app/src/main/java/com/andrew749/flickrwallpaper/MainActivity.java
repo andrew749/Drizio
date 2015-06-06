@@ -27,7 +27,7 @@ public class MainActivity extends AppCompatActivity implements ListDownloadingIn
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+                setContentView(R.layout.activity_main);
         storage = LocalStorage.getInstance(getApplicationContext());
         mainActivityFragment = (MainActivityFragment) getSupportFragmentManager().findFragmentById(R.id.listfragment);
         settingsFragment=(SettingsFragment)getFragmentManager().findFragmentById(R.id.fragment);

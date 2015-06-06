@@ -24,7 +24,7 @@ import java.util.TimerTask;
  */
 public class WallpaperService extends android.service.wallpaper.WallpaperService implements SharedPreferences.OnSharedPreferenceChangeListener {
     private Paint paint = new Paint();
-    private String interval = ".1";
+    private float interval = (float) .1;
     private int cacheSize = 100;
     private String imageSize = "Large";
     Timer timer=new Timer();
@@ -38,7 +38,7 @@ public class WallpaperService extends android.service.wallpaper.WallpaperService
     private void updateProperties() {
         //get preferences
         cacheSize = getSharedPreferences(SettingsFragment.prefsName, Context.MODE_PRIVATE).getInt(SettingsFragment.cacheName, 5);
-        interval = getSharedPreferences(SettingsFragment.prefsName, Context.MODE_PRIVATE).getString(SettingsFragment.refreshName, ".1");
+        interval = getSharedPreferences(SettingsFragment.prefsName, Context.MODE_PRIVATE).getFloat(SettingsFragment.refreshName, (float) .1);
         imageSize = getSharedPreferences(SettingsFragment.prefsName, Context.MODE_PRIVATE).getString(SettingsFragment.imageName, "Large");
     }
 
@@ -173,7 +173,7 @@ public class WallpaperService extends android.service.wallpaper.WallpaperService
                 }
                 handler.removeCallbacks(runnable);
                 if (visible) {
-                    handler.postDelayed(runnable, (long) (Double.parseDouble(interval) * 1000 * 60));
+                    handler.postDelayed(runnable, (long) (interval * 1000 * 60));
                 }
             } else {
                 //most likely a deletion so recheck the array for null entries

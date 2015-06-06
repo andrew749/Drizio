@@ -57,25 +57,25 @@ public class SettingsFragment extends Fragment implements OnItemSelectedListener
         refreshImages.setOnClickListener(this);
         clearImages.setOnClickListener(this);
         ArrayAdapter radapter=(ArrayAdapter)refresh.getAdapter(),cadapter=(ArrayAdapter)cache.getAdapter(),qadapter=(ArrayAdapter)quality.getAdapter();
-        refresh.setSelection(radapter.getPosition(prefs.getString("refresh_rate",".1")));
-        cache.setSelection(cadapter.getPosition(prefs.getInt("cache_size",5)));
+        String test=new String(""+prefs.getFloat("refresh_rate", (float) .1));
+        int p=radapter.getPosition(test);
+        refresh.setSelection(p);
+        cache.setSelection(cadapter.getPosition(new String(""+prefs.getInt("cache_size",5))));
         quality.setSelection(qadapter.getPosition(prefs.getString("image_size","Small")));
-
         return view;
     }
 
     public void setCallback(RefreshController callback){
         this.callback=callback;
     }
-
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         switch(parent.getId()){
             case R.id.spinnerCache:
-                prefs.edit().putInt("cache_size",getResources().getIntArray(R.array.cache_size_value)[position]).commit();
+                prefs.edit().putInt("cache_size", Integer.parseInt(getResources().getStringArray(R.array.cache_size_value)[position])).commit();
                 break;
             case R.id.spinnerRate:
-                prefs.edit().putString("refresh_rate",getResources().getStringArray(R.array.intervals_value)[position]).commit();
+                prefs.edit().putFloat("refresh_rate", Float.parseFloat(getResources().getStringArray(R.array.intervals_value)[position])).commit();
                 break;
             case R.id.imageSizeSelector:
                 prefs.edit().putString("image_size",getResources().getStringArray(R.array.quality_list)[position]).commit();
