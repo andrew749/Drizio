@@ -38,7 +38,7 @@ public class WallpaperService extends android.service.wallpaper.WallpaperService
     private void updateProperties() {
         //get preferences
         cacheSize = getSharedPreferences(SettingsFragment.prefsName, Context.MODE_PRIVATE).getInt(SettingsFragment.cacheName, 5);
-        interval = getSharedPreferences(SettingsFragment.prefsName, Context.MODE_PRIVATE).getFloat(SettingsFragment.refreshName, (float) .1);
+        interval = Float.parseFloat(getSharedPreferences(SettingsFragment.prefsName, Context.MODE_PRIVATE).getString(SettingsFragment.refreshName, "0.1"));
         imageSize = getSharedPreferences(SettingsFragment.prefsName, Context.MODE_PRIVATE).getString(SettingsFragment.imageName, "Large");
     }
 
