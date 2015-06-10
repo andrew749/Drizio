@@ -71,7 +71,7 @@ public class WallpaperService extends android.service.wallpaper.WallpaperService
                     searcher = new FlickrSearcher(getApplicationContext());
                     searcher.getImages(cacheSize);
                     checkForNewImage();
-                    handler.postDelayed(this, 1000);
+                    handler.postDelayed(this, 5000);
                     return;
                 }
 
@@ -114,7 +114,6 @@ public class WallpaperService extends android.service.wallpaper.WallpaperService
                 long lastUpdate = getSharedPreferences(SettingsFragment.prefsName, Context.MODE_PRIVATE).getLong("lastUpdate", 0);
                 long diff = System.currentTimeMillis() - lastUpdate;
                 if (storage != null && diff != 0 && diff > 1000) {
-                    Log.d("flickr", "do update stuff here");
                     storage.deleteImages();
                     if (searcher == null)
                         searcher = new FlickrSearcher(getApplicationContext());
