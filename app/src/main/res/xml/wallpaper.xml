@@ -1,6 +1,7 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <wallpaper
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:label="FlickrWallpaper"
-    android:thumbnail="@drawable/defaultplaceholder">
-</wallpaper>
+    android:thumbnail="@drawable/flickrwallpapericon"
+    android:description="@string/description"
+    android:label="@string/app_name"
+    android:settingsActivity="com.andrew749.flickrwallpaper.MainActivity"></wallpaper>

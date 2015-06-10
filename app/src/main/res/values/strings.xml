@@ -6,4 +6,5 @@
     <string name="refreshButtonTitle">Refresh</string>
     <string name="clearButtonTitle">Clear Cache</string>
     <string name="imageSizeTitle">Image Quality:</string>
+    <string name="description">A live wallpaper displaying a slideshow of Flickr images.</string>
 </resources>
