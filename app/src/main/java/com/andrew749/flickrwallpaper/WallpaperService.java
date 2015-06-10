@@ -15,6 +15,7 @@ import com.andrew749.flickrwallpaper.FlickrHelper.FlickrSearcher;
 import com.andrew749.flickrwallpaper.Fragments.SettingsFragment;
 
 import java.util.ArrayList;
+import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -153,7 +154,7 @@ public class WallpaperService extends android.service.wallpaper.WallpaperService
             final SurfaceHolder holder = getSurfaceHolder();
             Canvas c = holder.lockCanvas();
             previous = current;
-            current = storage.getImage(imageNames.get(index++));
+            if(imageNames.size()>0)current = storage.getImage(imageNames.get(index++));
             if (current != null) {
                 try {
                     // clear the canvas
@@ -182,7 +183,11 @@ public class WallpaperService extends android.service.wallpaper.WallpaperService
                 while (iter.hasNext()) {
                     String temp=iter.next();
                     if (!storage.imageExists(temp)) {
-                        iter.remove();
+                        try {
+                            iter.remove();
+                        }catch (ConcurrentModificationException e){
+                            e.printStackTrace();
+                        }
                     }
                 }
                 holder.unlockCanvasAndPost(c);
