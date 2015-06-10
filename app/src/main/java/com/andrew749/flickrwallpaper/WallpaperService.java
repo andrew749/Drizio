@@ -28,7 +28,8 @@ public class WallpaperService extends android.service.wallpaper.WallpaperService
     private float interval = (float) .1;
     private int cacheSize = 100;
     private String imageSize = "Large";
-    Timer timer=new Timer();
+    Timer timer = new Timer();
+
     @Override
     public Engine onCreateEngine() {
         updateProperties();
@@ -66,7 +67,7 @@ public class WallpaperService extends android.service.wallpaper.WallpaperService
             public void run() {
                 //do a query to get more images if anything changes or if its the first run
                 if (imageNames.size() == 0) {
-                    Log.d("flickr","no image name");
+                    Log.d("flickr", "no image name");
                     searcher = new FlickrSearcher(getApplicationContext());
                     searcher.getImages(cacheSize);
                     checkForNewImage();
@@ -106,29 +107,31 @@ public class WallpaperService extends android.service.wallpaper.WallpaperService
             }
 
         }
-        private TimerTask task=new TimerTask() {
+
+        private TimerTask task = new TimerTask() {
             @Override
             public void run() {
-                long lastUpdate=getSharedPreferences(SettingsFragment.prefsName,Context.MODE_PRIVATE).getLong("lastUpdate",0);
-                long diff= System.currentTimeMillis()-lastUpdate;
-                if(storage!=null&&diff!=0&&diff>1000){
+                long lastUpdate = getSharedPreferences(SettingsFragment.prefsName, Context.MODE_PRIVATE).getLong("lastUpdate", 0);
+                long diff = System.currentTimeMillis() - lastUpdate;
+                if (storage != null && diff != 0 && diff > 1000) {
                     Log.d("flickr", "do update stuff here");
                     storage.deleteImages();
-                    if(searcher==null)
-                        searcher=new FlickrSearcher(getApplicationContext());
+                    if (searcher == null)
+                        searcher = new FlickrSearcher(getApplicationContext());
                     searcher.getImages(cacheSize);
 
                     imageNames.clear();
                 }
             }
         };
+
         @Override
         public void onCreate(SurfaceHolder surfaceHolder) {
             super.onCreate(surfaceHolder);
             paint.setColor(Color.WHITE);
             storage = LocalStorage.getInstance(getApplicationContext());
             imageNames.addAll(storage.getImageNames());
-            timer.schedule(task,1000,86400000);
+            timer.schedule(task, 1000, 86400000);
         }
 
         @Override
@@ -154,7 +157,7 @@ public class WallpaperService extends android.service.wallpaper.WallpaperService
             final SurfaceHolder holder = getSurfaceHolder();
             Canvas c = holder.lockCanvas();
             previous = current;
-            if(imageNames.size()>0)current = storage.getImage(imageNames.get(index++));
+            if (imageNames.size() > 0) current = storage.getImage(imageNames.get(index++));
             if (current != null) {
                 try {
                     // clear the canvas
@@ -177,21 +180,22 @@ public class WallpaperService extends android.service.wallpaper.WallpaperService
                     handler.postDelayed(runnable, (long) (interval * 1000 * 60));
                 }
             } else {
-                //most likely a deletion so recheck the array for null entries
-                Iterator<String> iter = imageNames.iterator();
+                try {
+                    //most likely a deletion so recheck the array for null entries
+                    Iterator<String> iter = imageNames.iterator();
 
-                while (iter.hasNext()) {
-                    String temp=iter.next();
-                    if (!storage.imageExists(temp)) {
-                        try {
+                    while (iter.hasNext()) {
+                        String temp = iter.next();
+                        if (!storage.imageExists(temp)) {
                             iter.remove();
-                        }catch (ConcurrentModificationException e){
-                            e.printStackTrace();
+
                         }
                     }
+                } catch (ConcurrentModificationException e) {
+                    e.printStackTrace();
                 }
                 holder.unlockCanvasAndPost(c);
-                handler.postDelayed(runnable,1000);
+                handler.postDelayed(runnable, 1000);
 
             }
         }
