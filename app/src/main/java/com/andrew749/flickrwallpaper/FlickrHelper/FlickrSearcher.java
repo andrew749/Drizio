@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 
 import com.andrew749.flickrwallpaper.Fragments.SettingsFragment;
+import com.andrew749.flickrwallpaper.R;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -58,7 +59,7 @@ public class FlickrSearcher{
         protected ArrayList<FlickrResult> doInBackground(Integer... params) {
             ArrayList<FlickrResult> results = new ArrayList<FlickrResult>();
             int numImages=params[0];
-            String queryParameter = "?method=flickr.interestingness.getList&api_key=6c30fdb8388402770932f08d6e367939&format=json&nojsoncallback=1&per_page="+numImages;
+            String queryParameter = "?method=flickr.interestingness.getList&api_key="+context.getResources().getString(R.string.flickr_api_key)+"&format=json&nojsoncallback=1&per_page="+numImages;
             try {
                 URL url = new URL(REST_ENDPOINT + queryParameter);
                 Gson gson = new GsonBuilder().create();
