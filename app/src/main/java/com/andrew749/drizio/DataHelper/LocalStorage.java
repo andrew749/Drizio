@@ -1,4 +1,4 @@
-package com.andrew749.flickrwallpaper.DataHelper;
+package com.andrew749.drizio.DataHelper;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -6,7 +6,7 @@ import android.graphics.BitmapFactory;
 import android.os.Environment;
 import android.util.Log;
 
-import com.andrew749.flickrwallpaper.MainActivity;
+import com.andrew749.drizio.MainActivity;
 
 import java.io.File;
 import java.io.FileNotFoundException;

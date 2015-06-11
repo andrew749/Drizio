@@ -1,4 +1,4 @@
-package com.andrew749.flickrwallpaper.Fragments;
+package com.andrew749.drizio.Fragments;
 
 import android.app.Activity;
 import android.app.Fragment;
@@ -15,9 +15,9 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
 
-import com.andrew749.flickrwallpaper.DataHelper.LocalStorage;
-import com.andrew749.flickrwallpaper.Interfaces.RefreshController;
-import com.andrew749.flickrwallpaper.R;
+import com.andrew749.drizio.DataHelper.LocalStorage;
+import com.andrew749.drizio.Interfaces.RefreshController;
+import com.andrew749.drizio.R;
 
 /**
  * Created by andrewcodispoti on 2015-05-30.

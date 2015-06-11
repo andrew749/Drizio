@@ -1,4 +1,4 @@
-package com.andrew749.flickrwallpaper.DataHelper;
+package com.andrew749.drizio.DataHelper;
 
 import android.graphics.Bitmap;
 

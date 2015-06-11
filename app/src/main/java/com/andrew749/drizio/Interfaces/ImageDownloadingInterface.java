@@ -1,4 +1,4 @@
-package com.andrew749.flickrwallpaper.Interfaces;
+package com.andrew749.drizio.Interfaces;
 
 import android.graphics.Bitmap;
 

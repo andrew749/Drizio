@@ -1,4 +1,4 @@
-package com.andrew749.flickrwallpaper;
+package com.andrew749.drizio;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -10,9 +10,9 @@ import android.os.Handler;
 import android.util.Log;
 import android.view.SurfaceHolder;
 
-import com.andrew749.flickrwallpaper.DataHelper.LocalStorage;
-import com.andrew749.flickrwallpaper.FlickrHelper.FlickrSearcher;
-import com.andrew749.flickrwallpaper.Fragments.SettingsFragment;
+import com.andrew749.drizio.DataHelper.LocalStorage;
+import com.andrew749.drizio.FlickrHelper.FlickrSearcher;
+import com.andrew749.drizio.Fragments.SettingsFragment;
 
 import java.util.ArrayList;
 import java.util.ConcurrentModificationException;

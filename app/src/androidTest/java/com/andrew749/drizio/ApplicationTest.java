@@ -1,4 +1,4 @@
-package com.andrew749.flickrwallpaper;
+package com.andrew749.drizio;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;

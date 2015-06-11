@@ -1,11 +1,9 @@
-package com.andrew749.flickrwallpaper;
+package com.andrew749.drizio;
 
 import android.app.ActionBar;
 import android.app.Activity;
 import android.graphics.Bitmap;
-import android.media.Image;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 

@@ -1,4 +1,4 @@
-package com.andrew749.flickrwallpaper.Fragments;
+package com.andrew749.drizio.Fragments;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -8,9 +8,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
-import com.andrew749.flickrwallpaper.FlickrHelper.FlickrResult;
-import com.andrew749.flickrwallpaper.Adapters.ImageAdapter;
-import com.andrew749.flickrwallpaper.R;
+import com.andrew749.drizio.FlickrHelper.FlickrResult;
+import com.andrew749.drizio.Adapters.ImageAdapter;
+import com.andrew749.drizio.R;
 
 import java.util.ArrayList;
 
