@@ -1,4 +1,4 @@
-package com.andrew749.drizio;
+package com.andrew749.flickrwallpaper;
 
 import android.app.ActionBar;
 import android.app.Activity;

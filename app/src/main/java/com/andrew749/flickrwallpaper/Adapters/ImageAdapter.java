@@ -1,4 +1,4 @@
-package com.andrew749.drizio.Adapters;
+package com.andrew749.flickrwallpaper.Adapters;
 
 import android.content.Context;
 import android.content.Intent;
@@ -10,9 +10,9 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.andrew749.drizio.FlickrHelper.FlickrResult;
-import com.andrew749.drizio.FullSizeImage;
-import com.andrew749.drizio.R;
+import com.andrew749.flickrwallpaper.FlickrHelper.FlickrResult;
+import com.andrew749.flickrwallpaper.FullSizeImage;
+import com.andrew749.flickrwallpaper.R;
 
 import java.util.ArrayList;
 

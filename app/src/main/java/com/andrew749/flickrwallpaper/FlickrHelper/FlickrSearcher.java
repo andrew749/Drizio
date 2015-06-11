@@ -1,10 +1,10 @@
-package com.andrew749.drizio.FlickrHelper;
+package com.andrew749.flickrwallpaper.FlickrHelper;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 
-import com.andrew749.drizio.Fragments.SettingsFragment;
+import com.andrew749.flickrwallpaper.Fragments.SettingsFragment;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 

@@ -4,4 +4,4 @@
     android:thumbnail="@drawable/flickrwallpapericon"
     android:description="@string/description"
     android:label="@string/app_name"
-    android:settingsActivity="com.andrew749.drizio.MainActivity"></wallpaper>
+    android:settingsActivity="com.andrew749.flickrwallpaper.MainActivity"></wallpaper>

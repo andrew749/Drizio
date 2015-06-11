@@ -1,4 +1,4 @@
-package com.andrew749.drizio.FlickrHelper;
+package com.andrew749.flickrwallpaper.FlickrHelper;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -6,9 +6,9 @@ import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.widget.ImageView;
 
-import com.andrew749.drizio.Interfaces.ImageDownloadingInterface;
-import com.andrew749.drizio.Interfaces.LinkFollowingCallback;
-import com.andrew749.drizio.DataHelper.LocalStorage;
+import com.andrew749.flickrwallpaper.Interfaces.ImageDownloadingInterface;
+import com.andrew749.flickrwallpaper.Interfaces.LinkFollowingCallback;
+import com.andrew749.flickrwallpaper.DataHelper.LocalStorage;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 

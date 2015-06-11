@@ -1,4 +1,4 @@
-package com.andrew749.drizio.Interfaces;
+package com.andrew749.flickrwallpaper.Interfaces;
 
 import java.net.URL;
 

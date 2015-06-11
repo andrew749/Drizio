@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.andrew749.drizio" >
+    package="com.andrew749.flickrwallpaper" >
 
     <application
         android:allowBackup="true"
@@ -9,7 +9,7 @@
         android:theme="@style/AppTheme"
         android:largeHeap="true">
         <activity
-            android:name="com.andrew749.drizio.MainActivity"
+            android:name="com.andrew749.flickrwallpaper.MainActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:label="@string/app_name">
             <intent-filter>
@@ -17,7 +17,7 @@
             </intent-filter>
         </activity>
         <service
-            android:name="com.andrew749.drizio.WallpaperService"
+            android:name="com.andrew749.flickrwallpaper.WallpaperService"
             android:enabled="true"
             android:label="@string/app_name"
             android:permission="android.permission.BIND_WALLPAPER" >

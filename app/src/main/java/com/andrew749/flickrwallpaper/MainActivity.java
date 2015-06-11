@@ -1,16 +1,16 @@
-package com.andrew749.drizio;
+package com.andrew749.flickrwallpaper;
 
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
-import com.andrew749.drizio.DataHelper.LocalStorage;
-import com.andrew749.drizio.FlickrHelper.FlickrResult;
-import com.andrew749.drizio.FlickrHelper.FlickrSearcher;
-import com.andrew749.drizio.Fragments.MainActivityFragment;
-import com.andrew749.drizio.Fragments.SettingsFragment;
-import com.andrew749.drizio.Interfaces.ListDownloadingInterface;
-import com.andrew749.drizio.Interfaces.RefreshController;
+import com.andrew749.flickrwallpaper.DataHelper.LocalStorage;
+import com.andrew749.flickrwallpaper.FlickrHelper.FlickrResult;
+import com.andrew749.flickrwallpaper.FlickrHelper.FlickrSearcher;
+import com.andrew749.flickrwallpaper.Fragments.MainActivityFragment;
+import com.andrew749.flickrwallpaper.Fragments.SettingsFragment;
+import com.andrew749.flickrwallpaper.Interfaces.ListDownloadingInterface;
+import com.andrew749.flickrwallpaper.Interfaces.RefreshController;
 
 import java.util.ArrayList;
 
