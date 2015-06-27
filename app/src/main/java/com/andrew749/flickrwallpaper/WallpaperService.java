@@ -6,6 +6,8 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Handler;
 import android.util.Log;
 import android.view.SurfaceHolder;
@@ -67,7 +69,6 @@ public class WallpaperService extends android.service.wallpaper.WallpaperService
             public void run() {
                 //do a query to get more images if anything changes or if its the first run
                 if (imageNames.size() == 0) {
-                    Log.d("flickr", "no image name");
                     searcher = new FlickrSearcher(getApplicationContext());
                     searcher.getImages(cacheSize);
                     checkForNewImage();
@@ -101,7 +102,6 @@ public class WallpaperService extends android.service.wallpaper.WallpaperService
                 }
                 if (flag == 1) {
                     imageNames.add(imageName);
-                    Log.d("Flickr", "Adding new image");
                 }
 
             }
@@ -131,6 +131,8 @@ public class WallpaperService extends android.service.wallpaper.WallpaperService
             storage = LocalStorage.getInstance(getApplicationContext());
             imageNames.addAll(storage.getImageNames());
             timer.schedule(task, 1000, 86400000);
+            handler.postDelayed(runnable,1000);
+
         }
 
         @Override
