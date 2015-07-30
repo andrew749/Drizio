@@ -8,6 +8,6 @@ wallpaper. These properties in turn are read by the underlying service running i
 
 ![Drizio](/screenshots/drizio.png)
 ##Screenshots
-![Phone](/screenshots/screenshots/phone/device-2015-06-09-225854.png)
-![7 inch](/screenshots/screenshots/7inch/device-2015-06-11-185054.png)
-![10 inch](/screenshots/screenshots/10\ inch/device-2015-06-10-231543.png)
+![Phone](https://github.com/andrew749/Drizio/blob/master/screenshots/screenshots/screenshots/phone/device-2015-06-09-225854.png?raw=true "Phone")
+![7 inch](https://github.com/andrew749/Drizio/blob/master/screenshots/screenshots/screenshots/7inch/device-2015-06-11-185054.pn://github.com/andrew749/Drizio/blob/master/screenshots/screenshots/screenshots/7inch/device-2015-06-11-185054.png "7 inch")
+![10 inch](https://github.com/andrew749/Drizio/blob/master/screenshots/screenshots/screenshots/10%20inch/device-2015-06-10-231543.png "10 inch")
